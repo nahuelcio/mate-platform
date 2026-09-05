@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor 3D - mate-platform</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e6edf3;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+    }
+    #sidebar {
+      width: 320px;
+      background: #161b22;
+      border-right: 1px solid #30363d;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 10;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    }
+    h1 { font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+    .badge {
+      font-size: 0.75rem;
+      background: #238636;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .piece-list { display: flex; flex-direction: column; gap: 8px; }
+    .piece-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 12px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .piece-btn:hover { background: #30363d; border-color: #58a6ff; }
+    .piece-btn.active {
+      background: #1f6feb;
+      border-color: #58a6ff;
+      color: white;
+      font-weight: 600;
+    }
+    .info-box {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #8b949e;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+    .info-box strong { color: #58a6ff; }
+    .controls-hint {
+      font-size: 0.78rem;
+      color: #8b949e;
+      padding-top: 8px;
+      border-top: 1px solid #30363d;
+    }
+    #viewer-container {
+      flex: 1;
+      position: relative;
+      height: 100%;
+    }
+    #canvas3d { width: 100%; height: 100%; display: block; }
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(22, 27, 34, 0.85);
+      border: 1px solid #30363d;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      pointer-events: none;
+      display: none;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+</head>
+<body>
+
+  <div id="sidebar">
+    <h1>🧉 mate-platform <span class="badge">3D CAD</span></h1>
+    <p style="font-size: 0.85rem; color: #8b949e;">Seleccioná la pieza para visualizar e inspeccionar:</p>
+
+    <div class="piece-list">
+      <button class="piece-btn active" onclick="loadModel(0)">
+        <span>1. Cuna Basculante 45°</span>
+        <small style="opacity: 0.7;">Calabaza + IMU</small>
+      </button>
+      <button class="piece-btn" onclick="loadModel(1)">
+        <span>2. Chasis Principal</span>
+        <small style="opacity: 0.7;">ESP32 + Servo</small>
+      </button>
+      <button class="piece-btn" onclick="loadModel(2)">
+        <span>3. Carcasa Sensores</span>
+        <small style="opacity: 0.7;">OLED + US + Mic</small>
+      </button>
+      <button class="piece-btn" onclick="loadModel(3)">
+        <span>4. Tapa Inferior</span>
+        <small style="opacity: 0.7;">Servicio</small>
+      </button>
+      <button class="piece-btn" onclick="loadModel(-1)">
+        <span>📦 Ver Todas Juntas</span>
+        <small style="opacity: 0.7;">Ensamble</small>
+      </button>
+    </div>
+
+    <div class="info-box" id="info-box">
+      <strong>Pieza 1: Cuna Basculante 45°</strong><br><br>
+      • Asiento interior cónico Ø 78 mm para el mate.<br>
+      • Pernos de giro laterales Ø 6 mm.<br>
+      • Aloja el sensor IMU GY-521 debajo.<br>
+      • Ojal inferior para vincular con el servo SG90.
+    </div>
+
+    <div class="controls-hint">
+      <strong>Controles 3D:</strong><br>
+      • Click izquierdo + arrastrar: Rotar<br>
+      • Rueda del mouse: Zoom<br>
+      • Click derecho + arrastrar: Mover cámara
+    </div>
+  </div>
+
+  <div id="viewer-container">
+    <div id="loading">Cargando modelo 3D...</div>
+    <div id="canvas3d"></div>
+  </div>
+
+  <script>
+    const models = [
+      {
+        name: "01_tilting_cradle_45deg.stl",
+        color: 0x2ea043, // Verde mate
+        desc: "<strong>Pieza 1: Cuna Basculante 45°</strong><br><br>• Asiento interior cónico Ø 78 mm.<br>• Pernos de pivote Ø 6 mm integrados.<br>• Bolsillo inferior para fijar acelerómetro GY-521 MPU6050.<br>• Orejeta para el brazo de empuje del servo SG90."
+      },
+      {
+        name: "02_main_enclosure_base.stl",
+        color: 0x1f6feb, // Azul chasis
+        desc: "<strong>Pieza 2: Chasis Principal</strong><br><br>• Guías internas deslizables para placa ESP32 (30 pines).<br>• Salida para puerto USB posterior.<br>• Bahía rígida para fijación del servo SG90 con orejeras.<br>• Vaso acústico resonador para el buzzer de 12 mm."
+      },
+      {
+        name: "03_upper_sensor_fascia.stl",
+        color: 0xd29922, // Amarillo/dorado frontal
+        desc: "<strong>Pieza 3: Carcasa Frontal y Sensores</strong><br><br>• Bisel angulado a 30° para la pantalla OLED 0.96\".<br>• Ojos frontales de Ø 16.5 mm para el sensor HC-SR04.<br>• Rejilla acústica para el micrófono analógico GY-MAX9814.<br>• Bancadas de giro para sostener los pernos de la cuna."
+      },
+      {
+        name: "04_bottom_service_lid.stl",
+        color: 0xa371f7, // Violeta tapa
+        desc: "<strong>Pieza 4: Tapa Inferior de Servicio</strong><br><br>• Ranuras de ventilación tipo persiana.<br>• 4 cavidades para patas de goma antideslizantes (Ø 12 x 2 mm).<br>• Fijación mediante 4 tornillos M3 avellanados."
+      }
+    ];
+
+    const container = document.getElementById('canvas3d');
+    const loading = document.getElementById('loading');
+    const infoBox = document.getElementById('info-box');
+    const buttons = document.querySelectorAll('.piece-btn');
+
+    // Escena, cámara y renderizador
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0d1117);
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
+    camera.position.set(130, 140, 160);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Luces
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight1.position.set(150, 200, 100);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x58a6ff, 0.4);
+    dirLight2.position.set(-150, -100, -100);
+    scene.add(dirLight2);
+
+    // Grilla en el piso
+    const gridHelper = new THREE.GridHelper(260, 26, 0x30363d, 0x21262d);
+    gridHelper.position.y = -2;
+    scene.add(gridHelper);
+
+    const currentMeshes = [];
+    const stlLoader = new THREE.STLLoader();
+
+    function clearMeshes() {
+      currentMeshes.forEach(mesh => scene.remove(mesh));
+      currentMeshes.length = 0;
+    }
+
+    function loadModel(index) {
+      buttons.forEach((b, i) => b.classList.toggle('active', i === (index === -1 ? 4 : index)));
+      clearMeshes();
+      loading.style.display = 'block';
+
+      if (index === -1) {
+        // Cargar todas juntas en ensamble
+        infoBox.innerHTML = "<strong>📦 Vista de Ensamble Completo</strong><br><br>Muestra todas las piezas en su disposición estructural básica.<br>Usá el mouse para rotar, acercarte o inspeccionar detalles de encastre.";
+        let loadedCount = 0;
+        models.forEach((m, idx) => {
+          stlLoader.load(`models/${m.name}`, (geometry) => {
+            const material = new THREE.MeshStandardMaterial({
+              color: m.color,
+              roughness: 0.4,
+              metalness: 0.2
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            // Orientación STL estándar (Z-up a Three.js Y-up)
+            mesh.rotation.x = -Math.PI / 2;
+            if (idx === 0) mesh.position.y = 35; // Cuna elevada
+            if (idx === 2) mesh.position.y = 20; // Fascia intermedia
+            if (idx === 3) mesh.position.y = -5; // Tapa inferior
+            scene.add(mesh);
+            currentMeshes.push(mesh);
+            loadedCount++;
+            if (loadedCount === models.length) loading.style.display = 'none';
+          });
+        });
+        return;
+      }
+
+      const item = models[index];
+      infoBox.innerHTML = item.desc;
+
+      stlLoader.load(`models/${item.name}`, (geometry) => {
+        geometry.center();
+        const material = new THREE.MeshStandardMaterial({
+          color: item.color,
+          roughness: 0.35,
+          metalness: 0.25
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = -Math.PI / 2;
+        scene.add(mesh);
+        currentMeshes.push(mesh);
+        loading.style.display = 'none';
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Arrancar con la cuna basculante
+    loadModel(0);
+  </script>
+</body>
+</html>
