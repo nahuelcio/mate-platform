@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mate-platform · MagSafe Circular Dock</title>
+  <title>mate-platform · MagSafe Circular Dock (Cuenco Hundido)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -15,18 +15,18 @@
       display: flex;
     }
 
-    /* BARRA LATERAL ESTILO APPLE PRO STUDIO */
+    /* BARRA LATERAL PRO */
     #sidebar {
-      width: 380px;
-      background: rgba(18, 18, 20, 0.88);
-      backdrop-filter: blur(28px) saturate(180%);
+      width: 410px;
+      background: rgba(18, 18, 20, 0.94);
+      backdrop-filter: blur(32px) saturate(190%);
       border-right: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 28px 24px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       z-index: 10;
-      box-shadow: 12px 0 40px rgba(0, 0, 0, 0.8);
+      box-shadow: 12px 0 40px rgba(0, 0, 0, 0.85);
     }
 
     .brand {
@@ -34,7 +34,7 @@
       align-items: baseline;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 16px;
+      padding-bottom: 14px;
     }
     .brand h1 {
       font-size: 1.25rem;
@@ -47,10 +47,10 @@
     }
     .edition-tag {
       font-size: 0.65rem;
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.1);
-      color: #a1a1a6;
-      padding: 3px 8px;
+      font-weight: 700;
+      background: #0071e3;
+      color: #ffffff;
+      padding: 3px 9px;
       border-radius: 6px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
@@ -59,12 +59,12 @@
     .section-label {
       font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.4px;
       color: #86868b;
       font-weight: 600;
     }
 
-    /* SELECTOR DE PIEZAS MINIMALISTA */
+    /* SELECTOR DE PIEZAS */
     .parts-menu {
       display: flex;
       flex-direction: column;
@@ -102,7 +102,7 @@
     }
     .part-item.active .dim { color: rgba(255, 255, 255, 0.75); }
 
-    /* CONTROLES TÉCNICOS SLIM */
+    /* CONTROLES TÉCNICOS & BOTÓN FÍSICO */
     .control-deck {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.06);
@@ -110,36 +110,49 @@
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .tilt-btn {
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-btn {
       background: #f5f5f7;
       color: #000000;
       border: none;
       font-weight: 600;
-      font-size: 0.85rem;
-      padding: 12px;
+      font-size: 0.8rem;
+      padding: 10px;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.15s ease;
     }
-    .tilt-btn:hover { background: #ffffff; transform: translateY(-1px); }
-    .tilt-btn:active { transform: scale(0.98); }
+    .action-btn:hover { background: #ffffff; transform: translateY(-1px); }
+    .action-btn:active { transform: scale(0.97); }
+
+    .btn-hardware {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+    .btn-hardware:hover { filter: brightness(1.1); }
 
     .slider-wrap {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .slider-info {
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: #86868b;
     }
     .slider-info span:last-child {
@@ -156,7 +169,7 @@
       cursor: pointer;
     }
 
-    /* FICHA TÉCNICA MINIMALISTA */
+    /* ESPECIFICACIONES */
     .specs-card {
       background: rgba(255, 255, 255, 0.02);
       border-left: 2px solid #0071e3;
@@ -168,7 +181,8 @@
       flex-grow: 1;
       overflow-y: auto;
     }
-    .specs-card strong { color: #f5f5f7; font-weight: 500; }
+    .specs-card strong { color: #f5f5f7; font-weight: 600; }
+    .specs-card .highlight { color: #0071e3; font-weight: 600; }
 
     /* VIEWPORT 3D */
     #viewer-container {
@@ -184,25 +198,26 @@
       top: 24px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(18, 18, 20, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 8px 20px;
+      background: rgba(18, 18, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 24px;
       border-radius: 24px;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 500;
       color: #f5f5f7;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       backdrop-filter: blur(20px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
       pointer-events: none;
     }
     .dot-status {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #34c759;
+      box-shadow: 0 0 10px #34c759;
     }
 
     #loading {
@@ -210,10 +225,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(18, 18, 20, 0.9);
+      background: rgba(18, 18, 20, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #f5f5f7;
-      padding: 12px 24px;
+      padding: 14px 28px;
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 500;
@@ -230,39 +245,43 @@
   <div id="sidebar">
     <div class="brand">
       <h1>mate-platform</h1>
-      <span class="edition-tag">MagSafe Dock</span>
+      <span class="edition-tag">Dock MagSafe Pro</span>
     </div>
 
     <div class="section-label">Componentes del Ensamble</div>
     <div class="parts-menu">
       <div class="part-item active" onclick="selectPiece(-1)">
         <span class="title">Dock Completo Ensamblado</span>
-        <span class="dim">Ø 118 × 26 mm</span>
+        <span class="dim">Ø 118 × 34 mm</span>
       </div>
       <div class="part-item" onclick="selectPiece(0)">
-        <span class="title">1. Pad Basculante Flush</span>
-        <span class="dim">Ø 90 × 6 mm</span>
+        <span class="title">1. Cuenco Hundido Anti-Caídas</span>
+        <span class="dim">Ø 90 × 26 mm</span>
       </div>
       <div class="part-item" onclick="selectPiece(1)">
         <span class="title">2. Chasis Circular Unibody</span>
-        <span class="dim">Ø 118 × 26 mm</span>
+        <span class="dim">Ø 118 × 34 mm</span>
       </div>
       <div class="part-item" onclick="selectPiece(2)">
-        <span class="title">3. Anillo & Bezel Display</span>
-        <span class="dim">Ø 113 × 8 mm</span>
+        <span class="title">3. Anillo Bezel + Display & Botón</span>
+        <span class="dim">Ø 113 × 10 mm</span>
       </div>
       <div class="part-item" onclick="selectPiece(3)">
         <span class="title">4. Base con Footprint de Goma</span>
-        <span class="dim">Ø 116 × 3 mm</span>
+        <span class="dim">Ø 116 × 3.5 mm</span>
       </div>
     </div>
 
-    <div class="section-label">Simulación Dinámica</div>
+    <div class="section-label">Simulación y Control Físico</div>
     <div class="control-deck">
-      <button class="tilt-btn" onclick="animatePour()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Simular Ciclo de Cebado (45°)
-      </button>
+      <div class="btn-row">
+        <button class="action-btn" onclick="animatePour()">
+          🌊 Cebar (45°)
+        </button>
+        <button class="action-btn btn-hardware" onclick="pressPhysicalButton()">
+          🔘 Presionar Botón
+        </button>
+      </div>
 
       <div class="slider-wrap">
         <div class="slider-info">
@@ -281,17 +300,20 @@
       </div>
     </div>
 
-    <div class="section-label">Especificaciones de Diseño</div>
+    <div class="section-label">Especificaciones de Hardware</div>
     <div class="specs-card" id="specs-text">
-      <strong>Diseño MagSafe Circular Fino:</strong><br>
-      Perfil ultra bajo con 26 mm de altura total. El mate se apoya suavemente sobre un pad circular continuo con rebaje de silicona. No hay ojos salientes ni molduras toscas: la pantalla OLED y los sensores quedan perfectamente integrados al ras del perímetro exterior.
+      <strong>✨ Cuenco Hundido Anti-Caídas:</strong><br>
+      • <span class="highlight">Cuenco cónico profundo (22 mm):</span> Paredes laterales que abrazan el mate (Ø 62 mm en base a Ø 78 mm en boca) para evitar caídas o deslices al inclinarlo a 45°.<br>
+      • <span class="highlight">Display OLED SSD1306 (0.96"):</span> Bisel perimetral frontal integrado al ras, visible de frente sin agacharse.<br>
+      • <span class="highlight">Botón Físico CNC (Ø 12 mm):</span> Corona táctil de aluminio (GPIO 15). Clic corto avanza turno manualmente; mantener 2s silencia alarma.<br>
+      • <span class="highlight">Mate Virtual Demostrativo:</span> En el visor podés ver el mate real encastrado dentro del cuenco basculando seguro.
     </div>
   </div>
 
   <div id="viewer-container">
     <div id="hud-status">
       <span class="dot-status"></span>
-      <span id="hud-label">Dock en reposo · Mate en posición neutra</span>
+      <span id="hud-label">OLED: "Turno de: Nahuel" · Mate encastrado en cuenco</span>
     </div>
     <div id="loading">Cargando STL...</div>
     <div id="canvas3d"></div>
@@ -301,23 +323,23 @@
     const partsData = [
       {
         name: "01_tilting_cradle_45deg.stl",
-        color: 0x222224, // Grafito mate pad
-        desc: "<strong>1. Pad Basculante Flush:</strong><br>Disco circular ultra plano de Ø 90 mm y solo 6 mm de espesor. El mate apoya libremente sobre su centro con rebaje de silicona. Oculta el acelerómetro GY-521 debajo y los pernos de pivote al ras del chasis."
+        color: 0x222224, // Cuenco grafito mate
+        desc: "<strong>1. Cuenco Hundido Anti-Caídas:</strong><br>Cuenco cónico de 22 mm de profundidad (Ø 62 mm en base, Ø 78 mm en boca). Sus propias paredes abrazan el cuerpo del mate, evitando físicamente cualquier deslizamiento o caída al inclinar a 45°. Oculta debajo el sensor acelerómetro GY-521."
       },
       {
         name: "02_main_enclosure_base.stl",
         color: 0x3a3a3c, // Aluminio anodizado gris espacial
-        desc: "<strong>2. Chasis Circular Unibody:</strong><br>Cuerpo cilíndrico bajo de Ø 118 mm x 26 mm con chaflán perimetral. Aloja horizontalmente la placa ESP32, el microservo SG90 y la salida de audio acústica en una sola pieza limpia."
+        desc: "<strong>2. Chasis Circular Unibody:</strong><br>Cuerpo cilíndrico de Ø 118 mm x 34 mm. Aloja la fosa central de oscilación libre del cuenco, la placa ESP32, servo SG90, buzzer acústico, switch de presencia y conector del botón físico."
       },
       {
         name: "03_upper_sensor_fascia.stl",
-        color: 0x1c1c1e, // Negro piano bisel
-        desc: "<strong>3. Anillo Frontal & Bezel OLED:</strong><br>Aro superior con hendidura rasante para la pantalla OLED 0.96\" (sin marcos toscos) y micro-perforaciones discretas para los transductores de proximidad."
+        color: 0x1c1c1e, // Negro piano
+        desc: "<strong>3. Anillo Bezel + Display OLED & Botón Físico:</strong><br>• Ventana frontal integrada para pantalla OLED 0.96\" (SSD1306).<br>• Collar cilíndrico con botón de aluminio Ø 12 mm en el ángulo frontal derecho.<br>• Micro-perforaciones discretas para proximidad y micrófono."
       },
       {
         name: "04_bottom_service_lid.stl",
         color: 0x2c2c2e, // Base inferior
-        desc: "<strong>4. Base con Footprint Continuo:</strong><br>Tapa inferior con canal perimetral para anillo de goma continuo (evita deslizamientos en la mesa de trabajo) y ranuras de ventilación radiales sutiles."
+        desc: "<strong>4. Base con Footprint Continuo:</strong><br>Tapa inferior con canal perimetral para anillo de goma continuo (cero deslizamiento) y ranuras de ventilación radiales sutiles."
       }
     ];
 
@@ -331,28 +353,28 @@
     const tiltSlider = document.getElementById('tilt-slider');
     const tiltVal = document.getElementById('tilt-val');
 
-    // Escena 3D con estética de estudio de producto
+    // Escena 3D
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0c);
 
     const camera = new THREE.PerspectiveCamera(38, container.clientWidth / container.clientHeight, 1, 1000);
-    camera.position.set(110, 120, 160);
+    camera.position.set(120, 135, 175);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
     container.appendChild(renderer.domElement);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2 + 0.05; // No ir demasiado abajo del piso
+    controls.maxPolarAngle = Math.PI / 2 + 0.05;
 
-    // Iluminación de producto (Key Light + Rim Light sutil)
-    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    // Iluminación
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
     keyLight.position.set(120, 180, 100);
     scene.add(keyLight);
 
@@ -360,17 +382,112 @@
     fillLight.position.set(-120, -60, -80);
     scene.add(fillLight);
 
-    const rimLight = new THREE.DirectionalLight(0x0071e3, 0.4);
+    const rimLight = new THREE.DirectionalLight(0x0071e3, 0.45);
     rimLight.position.set(0, 150, -120);
     scene.add(rimLight);
 
-    // Piso sutil reflectivo / halo
+    // Piso halo
     const discGeom = new THREE.RingGeometry(55, 140, 64);
     const discMat = new THREE.MeshBasicMaterial({ color: 0x141418, side: THREE.DoubleSide });
     const floorDisc = new THREE.Mesh(discGeom, discMat);
     floorDisc.rotation.x = -Math.PI / 2;
     floorDisc.position.y = -2;
     scene.add(floorDisc);
+
+    // ==========================================
+    // MATE 3D VIRTUAL (Para mostrar cómo calza en el cuenco hundido)
+    // ==========================================
+    const mateGroup = new THREE.Group();
+    // Calabaza / cuerpo del mate
+    const mateBodyGeom = new THREE.CylinderGeometry(36, 29, 65, 32);
+    const mateBodyMat = new THREE.MeshStandardMaterial({
+      color: 0x2b1704, // Madera / calabaza oscura
+      roughness: 0.6,
+      metalness: 0.1
+    });
+    const mateBodyMesh = new THREE.Mesh(mateBodyGeom, mateBodyMat);
+    mateBodyMesh.position.y = 32.5;
+    mateGroup.add(mateBodyMesh);
+
+    // Virola metálica superior
+    const virolaGeom = new THREE.CylinderGeometry(37, 36, 8, 32);
+    const virolaMat = new THREE.MeshStandardMaterial({
+      color: 0xd4d4d8, // Acero inoxidable / alpaca
+      roughness: 0.2,
+      metalness: 0.85
+    });
+    const virolaMesh = new THREE.Mesh(virolaGeom, virolaMat);
+    virolaMesh.position.y = 66;
+    mateGroup.add(virolaMesh);
+
+    // Yerba mate en la boca
+    const yerbaGeom = new THREE.CircleGeometry(33, 32);
+    const yerbaMat = new THREE.MeshStandardMaterial({
+      color: 0x2d4a22, // Verde yerba
+      roughness: 0.9,
+      metalness: 0.0
+    });
+    const yerbaMesh = new THREE.Mesh(yerbaGeom, yerbaMat);
+    yerbaMesh.rotation.x = -Math.PI / 2;
+    yerbaMesh.position.y = 66.5;
+    mateGroup.add(yerbaMesh);
+
+    // Bombilla metálica inclinada
+    const bombillaGeom = new THREE.CylinderGeometry(2, 2, 85, 16);
+    const bombillaMat = new THREE.MeshStandardMaterial({
+      color: 0xe4e4e7,
+      roughness: 0.15,
+      metalness: 0.9
+    });
+    const bombillaMesh = new THREE.Mesh(bombillaGeom, bombillaMat);
+    bombillaMesh.position.set(10, 85, -5);
+    bombillaMesh.rotation.z = -Math.PI / 8;
+    bombillaMesh.rotation.x = Math.PI / 12;
+    mateGroup.add(bombillaMesh);
+
+    // Posición inicial: encastrado adentro del cuenco hundido (profundidad 22 mm)
+    mateGroup.position.set(0, 10, 0);
+    scene.add(mateGroup);
+
+    // ==========================================
+    // DISPLAY OLED CON TEXTO EN VIVO
+    // ==========================================
+    const oledCanvas = document.createElement('canvas');
+    oledCanvas.width = 256;
+    oledCanvas.height = 128;
+    const oledCtx = oledCanvas.getContext('2d');
+
+    const participantsList = ["Nahuel", "Santi", "Flor", "Mati"];
+    let currentParticipantIndex = 0;
+
+    function drawOledScreen(turnName) {
+      oledCtx.fillStyle = '#050b14';
+      oledCtx.fillRect(0, 0, 256, 128);
+
+      // Header
+      oledCtx.fillStyle = '#38bdf8';
+      oledCtx.font = 'bold 20px -apple-system, sans-serif';
+      oledCtx.fillText('= Ronda de Mate =', 20, 32);
+
+      // Turno
+      oledCtx.fillStyle = '#ffffff';
+      oledCtx.font = 'bold 36px -apple-system, sans-serif';
+      oledCtx.fillText(turnName, 20, 78);
+
+      // Subtexto
+      oledCtx.fillStyle = '#22c55e';
+      oledCtx.font = '18px -apple-system, sans-serif';
+      oledCtx.fillText('Listo para tomar', 20, 110);
+    }
+    drawOledScreen(participantsList[currentParticipantIndex]);
+
+    const oledTexture = new THREE.CanvasTexture(oledCanvas);
+    const oledPlaneGeom = new THREE.PlaneGeometry(28, 14);
+    const oledPlaneMat = new THREE.MeshBasicMaterial({ map: oledTexture });
+    const oledScreenMesh = new THREE.Mesh(oledPlaneGeom, oledPlaneMat);
+    oledScreenMesh.position.set(0, 26.5, -53.5);
+    oledScreenMesh.rotation.x = -Math.PI / 10;
+    scene.add(oledScreenMesh);
 
     const loader = new THREE.STLLoader();
     const meshes = [];
@@ -387,9 +504,12 @@
       clearScene();
       loading.style.display = 'block';
 
+      oledScreenMesh.visible = (idx === -1 || idx === 2);
+      mateGroup.visible = (idx === -1 || idx === 0);
+
       if (idx === -1) {
-        specsText.innerHTML = "<strong>Dock Completo Ensamblado:</strong><br>Perfil compacto de 26 mm de alto x 118 mm de diámetro. Usá el slider de <em>Vista Explosionada</em> para separar las 4 capas o hacé clic en <em>Simular Ciclo de Cebado</em> para ver cómo bascula el pad superior a 45°.";
-        hudLabel.innerText = "Dock en reposo · Mate en posición neutra";
+        specsText.innerHTML = "<strong>Dock Completo Ensamblado:</strong><br>Perfil compacto de 34 mm de alto x 118 mm de diámetro.<br>• Cuenco hundido 22 mm anti-caídas.<br>• Mate virtual encastrado en posición.<br>• Pantalla OLED frontal visible.<br>• Botón físico táctil (corona de aluminio) para pasar turno o silenciar alarma.<br>• Simulación de cebado con mate seguro sin riesgo de vuelco.";
+        hudLabel.innerText = `OLED: "Turno de: ${participantsList[currentParticipantIndex]}" · Mate encastrado seguro`;
         explSlider.value = 0;
         explVal.innerText = "0 mm";
         tiltSlider.value = 0;
@@ -399,14 +519,14 @@
         partsData.forEach((part, i) => {
           loader.load(`models/${part.name}`, (geom) => {
             const mat = new THREE.MeshStandardMaterial({
-              color: part.color,
+              color: (i === 2) ? 0x242426 : part.color,
               roughness: (i === 1) ? 0.35 : 0.45,
-              metalness: (i === 1) ? 0.6 : 0.2
+              metalness: (i === 1) ? 0.6 : (i === 2 ? 0.4 : 0.2)
             });
             const mesh = new THREE.Mesh(geom, mat);
             mesh.rotation.x = -Math.PI / 2;
-            if (i === 0) mesh.position.y = 19; // Pad superior flush
-            if (i === 2) mesh.position.y = 18; // Bezel frontal
+            if (i === 0) mesh.position.y = 8;  // Cuenco hundido en la fosa central
+            if (i === 2) mesh.position.y = 24; // Bezel frontal + Botón
             if (i === 3) mesh.position.y = -2; // Base de goma
             scene.add(mesh);
             meshes[i] = mesh;
@@ -440,27 +560,31 @@
       explVal.innerText = `${val} mm`;
       if (currentSelection === -1 && meshes.length === 4) {
         const d = parseFloat(val);
-        meshes[0].position.y = 19 + d * 1.2; // Pad sube
-        meshes[2].position.y = 18 + d * 0.7; // Anillo
-        meshes[3].position.y = -2 - d * 0.5; // Base baja
+        meshes[0].position.y = 8 + d * 1.2;
+        meshes[2].position.y = 24 + d * 0.7;
+        meshes[3].position.y = -2 - d * 0.5;
+        oledScreenMesh.position.y = 26.5 + d * 0.7;
+        mateGroup.position.y = 10 + d * 1.5;
       }
     }
 
     function updateTilt(deg) {
       tiltVal.innerText = `${deg}°`;
       const rad = (deg * Math.PI) / 180;
-      if (currentSelection === -1 && meshes[0]) {
-        meshes[0].rotation.x = -Math.PI / 2 + rad;
-      } else if (currentSelection === 0 && meshes[0]) {
+
+      // Rotar cuenco
+      if (meshes[0]) {
         meshes[0].rotation.x = -Math.PI / 2 + rad;
       }
+      // Rotar mate solidario con el cuenco
+      mateGroup.rotation.x = rad;
 
       if (deg > 30) {
-        hudLabel.innerText = `Inclinación de cebado activa (${deg}°)`;
+        hudLabel.innerText = `Cebando agua caliente (${deg}°) · Mate trabado por las paredes`;
       } else if (deg > 0) {
-        hudLabel.innerText = `Basculando pad superior (${deg}°)`;
+        hudLabel.innerText = `Inclinando cuenco hundido (${deg}°)`;
       } else {
-        hudLabel.innerText = `Dock en reposo · Mate en posición neutra`;
+        hudLabel.innerText = `OLED: "Turno de: ${participantsList[currentParticipantIndex]}" · Mate encastrado seguro`;
       }
     }
 
@@ -488,6 +612,19 @@
       }, 20);
     }
 
+    function pressPhysicalButton() {
+      currentParticipantIndex = (currentParticipantIndex + 1) % participantsList.length;
+      const nextPerson = participantsList[currentParticipantIndex];
+      drawOledScreen(nextPerson);
+      oledTexture.needsUpdate = true;
+
+      hudLabel.innerText = `🔘 ¡Botón presionado! Siguiente turno: ${nextPerson}`;
+
+      const btn = document.querySelector('.btn-hardware');
+      btn.style.transform = 'scale(0.92)';
+      setTimeout(() => { btn.style.transform = 'none'; }, 150);
+    }
+
     window.addEventListener('resize', () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
@@ -501,7 +638,6 @@
     }
     animate();
 
-    // Iniciar con ensamble completo
     selectPiece(-1);
   </script>
 </body>

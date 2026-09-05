@@ -10,7 +10,8 @@
     { "type": "wokwi-servo", "id": "sg90", "top": 300, "left": 380, "attrs": {} },
     { "type": "wokwi-buzzer", "id": "buzzer", "top": 300, "left": -40, "attrs": { "volume": "0.1" } },
     { "type": "wokwi-potentiometer", "id": "max9814", "top": 120, "left": -80, "attrs": { "label": "MAX9814 Mic" } },
-    { "type": "wokwi-pushbutton", "id": "btn-base", "top": 240, "left": -80, "attrs": { "color": "green", "label": "BASE MATE" } }
+    { "type": "wokwi-pushbutton", "id": "btn-base", "top": 240, "left": -80, "attrs": { "color": "green", "label": "BASE MATE" } },
+    { "type": "wokwi-pushbutton", "id": "btn-action", "top": 240, "left": 120, "attrs": { "color": "blue", "label": "BOTON TURNO" } }
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
@@ -43,7 +44,9 @@
     [ "max9814:SIG", "esp:35", "green", [ "v0" ] ],
 
     [ "btn-base:1.1", "esp:4", "green", [ "v0" ] ],
-    [ "btn-base:2.1", "esp:GND.1", "black", [ "v0" ] ]
+    [ "btn-base:2.1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "btn-action:1.1", "esp:15", "blue", [ "v0" ] ],
+    [ "btn-action:2.1", "esp:GND.1", "black", [ "v0" ] ]
   ],
   "dependencies": {}
 }

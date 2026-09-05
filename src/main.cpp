@@ -36,6 +36,13 @@ const int PIN_BUZZER = 19;
 // --- BASE DOCK SWITCH (MECHANICAL / BUTTON INPUT) ---
 const int PIN_BTN_BASE = 4;
 
+// --- MULTIFUNCTION PHYSICAL BUTTON (ALUMINUM CROWN) ---
+// Short press: manual next turn ("mate_next")
+// Long press (>2s): mute alarm / toggle round pause
+const int PIN_BTN_ACTION = 15;
+unsigned long btnActionPressTime = 0;
+bool btnActionLastState = HIGH;
+
 WebServer server(80);
 
 // --- ROUND / SESSION STATE ---
@@ -216,6 +223,7 @@ void setup() {
   Serial.begin(115200);
 
   pinMode(PIN_BTN_BASE, INPUT_PULLUP);
+  pinMode(PIN_BTN_ACTION, INPUT_PULLUP);
   pinMode(PIN_TRIG, OUTPUT);
   pinMode(PIN_ECHO, INPUT);
   pinMode(PIN_BUZZER, OUTPUT);
@@ -291,7 +299,31 @@ void loop() {
     delay(400); // Debounce
   }
 
-  // 2. Alarm trigger if mate is held past timeout
+  // 2. Physical Button Handling (GPIO 15)
+  bool btnState = digitalRead(PIN_BTN_ACTION);
+  if (btnActionLastState == HIGH && btnState == LOW) {
+    // Button pressed down
+    btnActionPressTime = millis();
+  } else if (btnActionLastState == LOW && btnState == HIGH) {
+    // Button released
+    unsigned long duration = millis() - btnActionPressTime;
+    if (duration > 2000) {
+      // Long press: Mute buzzer alarm or reset
+      if (delayAlarmActive) {
+        delayAlarmActive = false;
+        noTone(PIN_BUZZER);
+        Serial.println("[Button] Long press: Alarm muted!");
+        updateDisplay("Alarma silenciada", participants[currentTurn]);
+      }
+    } else if (duration > 50) {
+      // Short press: Manual Next Turn
+      Serial.println("[Button] Short press: Manual next turn!");
+      nextTurn();
+    }
+  }
+  btnActionLastState = btnState;
+
+  // 3. Alarm trigger if mate is held past timeout
   if (!mateOnDock && !delayAlarmActive && (millis() - liftedTimestamp > DELAY_TIMEOUT_MS)) {
     delayAlarmActive = true;
     tone(PIN_BUZZER, 1000); // Sound alarm buzzer
