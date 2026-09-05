@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MateLab 3D 🧉</title>
+  <title>MateBot 3D 🧉🤖</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at 50% 20%, #1e293b, #090d16);
+      background: radial-gradient(circle at 50% 30%, #1e1b4b, #09090b);
       color: #fff;
       overflow: hidden;
       height: 100vh;
       display: flex;
     }
 
-    /* BARRA LATERAL GAMIFICADA / DIVERTIDA */
+    /* SIDEBAR CYBERPUNK / MATERO */
     #sidebar {
-      width: 380px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(16px);
+      width: 390px;
+      background: rgba(15, 15, 23, 0.9);
+      backdrop-filter: blur(20px);
       border-right: 1px solid rgba(255, 255, 255, 0.1);
       padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       z-index: 10;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      box-shadow: 10px 0 35px rgba(0,0,0,0.6);
     }
 
     .brand {
@@ -35,10 +35,10 @@
       justify-content: space-between;
     }
     .brand h1 {
-      font-size: 1.4rem;
-      font-weight: 800;
+      font-size: 1.5rem;
+      font-weight: 900;
       letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #4ade80, #38bdf8);
+      background: linear-gradient(135deg, #a855f7, #06b6d4, #22c55e);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: flex;
@@ -47,31 +47,32 @@
     }
     .tag {
       font-size: 0.7rem;
-      font-weight: 700;
-      background: #22c55e;
-      color: #052e16;
+      font-weight: 800;
+      background: #06b6d4;
+      color: #083344;
       padding: 4px 10px;
       border-radius: 20px;
+      text-transform: uppercase;
     }
 
-    /* BOTONERA DE PIEZAS */
     .section-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #94a3b8;
+      letter-spacing: 1.2px;
+      color: #a1a1aa;
       font-weight: 700;
     }
 
+    /* CARDS DE PIEZAS REDONDAS */
     .piece-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
     .piece-card {
-      background: rgba(30, 41, 59, 0.7);
+      background: rgba(39, 39, 42, 0.6);
       border: 1.5px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 12px;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,36 +83,36 @@
     }
     .piece-card:hover {
       transform: translateY(-2px);
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.15);
+      border-color: #06b6d4;
+      background: rgba(6, 182, 212, 0.15);
     }
     .piece-card.active {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      border-color: #38bdf8;
-      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      border-color: #a5f3fc;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
     }
-    .piece-card .emoji { font-size: 1.3rem; }
-    .piece-card .name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-    .piece-card .sub { font-size: 0.7rem; color: #94a3b8; }
-    .piece-card.active .sub { color: #e0f2fe; }
+    .piece-card .emoji { font-size: 1.4rem; }
+    .piece-card .name { font-size: 0.85rem; font-weight: 800; color: #fff; }
+    .piece-card .sub { font-size: 0.7rem; color: #a1a1aa; }
+    .piece-card.active .sub { color: #f0fdf4; }
 
-    /* BOTÓN EXPLOSION Y CEBADA (ACCIONES DIVERTIDAS) */
+    /* ACTION ZONE */
     .action-box {
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
     .big-btn {
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: linear-gradient(135deg, #10b981, #06b6d4);
       border: none;
       color: white;
-      font-weight: 800;
-      font-size: 1rem;
+      font-weight: 900;
+      font-size: 1.05rem;
       padding: 14px;
       border-radius: 12px;
       cursor: pointer;
@@ -119,14 +120,14 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
       transition: all 0.15s ease;
     }
     .big-btn:hover {
       transform: scale(1.02);
-      filter: brightness(1.1);
+      filter: brightness(1.15);
     }
-    .big-btn:active { transform: scale(0.98); }
+    .big-btn:active { transform: scale(0.97); }
 
     .slider-group {
       display: flex;
@@ -137,32 +138,32 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.8rem;
-      font-weight: 600;
-      color: #cbd5e1;
+      font-weight: 700;
+      color: #e4e4e7;
     }
-    .slider-header span:last-child { color: #38bdf8; font-weight: 800; }
+    .slider-header span:last-child { color: #06b6d4; font-weight: 900; }
     input[type=range] {
-      accent-color: #38bdf8;
+      accent-color: #06b6d4;
       width: 100%;
       height: 6px;
-      background: #334155;
+      background: #3f3f46;
       border-radius: 4px;
       cursor: pointer;
     }
 
-    /* MINI FICHA DEL MATE */
+    /* FICHA MEME / DIVERTIDA */
     .trivia-card {
-      background: rgba(15, 23, 42, 0.6);
-      border-left: 3px solid #22c55e;
+      background: rgba(24, 24, 27, 0.6);
+      border-left: 3px solid #06b6d4;
       padding: 12px 14px;
       border-radius: 0 10px 10px 0;
       font-size: 0.82rem;
-      line-height: 1.45;
-      color: #94a3b8;
+      line-height: 1.5;
+      color: #a1a1aa;
       flex-grow: 1;
       overflow-y: auto;
     }
-    .trivia-card strong { color: #4ade80; }
+    .trivia-card strong { color: #38bdf8; }
 
     /* VIEWPORT 3D */
     #viewer-container {
@@ -177,19 +178,19 @@
       top: 24px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 15, 23, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.4);
       padding: 10px 24px;
       border-radius: 30px;
       font-size: 0.95rem;
-      font-weight: 700;
-      color: #38bdf8;
+      font-weight: 800;
+      color: #22d3ee;
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
       pointer-events: none;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
 
     #loading {
@@ -197,12 +198,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(15, 23, 42, 0.9);
-      border: 1.5px solid #38bdf8;
-      color: #38bdf8;
+      background: rgba(15, 15, 23, 0.95);
+      border: 1.5px solid #06b6d4;
+      color: #22d3ee;
       padding: 14px 28px;
       border-radius: 12px;
-      font-weight: 700;
+      font-weight: 800;
       pointer-events: none;
       display: none;
     }
@@ -215,48 +216,48 @@
 
   <div id="sidebar">
     <div class="brand">
-      <h1>🧉 MateLab 3D</h1>
-      <span class="tag">ESP32 Ready</span>
+      <h1>🤖 MateBot 3D</h1>
+      <span class="tag">V2 Curva</span>
     </div>
 
-    <div class="section-label">Seleccioná qué querés ver:</div>
+    <div class="section-label">Elegí qué pieza ver:</div>
     <div class="piece-grid">
       <div class="piece-card active" onclick="selectPiece(-1)">
-        <span class="emoji">📦</span>
-        <span class="name">Todo Junto</span>
-        <span class="sub">Ensamble 3D</span>
+        <span class="emoji">🚀</span>
+        <span class="name">MateBot Entero</span>
+        <span class="sub">Diseño Cilindro</span>
       </div>
       <div class="piece-card" onclick="selectPiece(0)">
-        <span class="emoji">🍵</span>
-        <span class="name">Cuna 45°</span>
-        <span class="sub">Asiento + IMU</span>
+        <span class="emoji">🧉</span>
+        <span class="name">Calabaza 45°</span>
+        <span class="sub">Cuna redonda + IMU</span>
       </div>
       <div class="piece-card" onclick="selectPiece(1)">
-        <span class="emoji">⚡</span>
-        <span class="name">Chasis Base</span>
-        <span class="sub">ESP32 + Servo</span>
+        <span class="emoji">🔋</span>
+        <span class="name">Cuerpo Termo</span>
+        <span class="sub">Chasis ESP32 curvo</span>
       </div>
       <div class="piece-card" onclick="selectPiece(2)">
-        <span class="emoji">👁️</span>
-        <span class="name">Frente Sensor</span>
-        <span class="sub">OLED + US + Mic</span>
+        <span class="emoji">👀</span>
+        <span class="name">Cara Minion</span>
+        <span class="sub">Ojos US + Boca OLED</span>
       </div>
       <div class="piece-card" onclick="selectPiece(3)" style="grid-column: span 2;">
-        <span class="emoji">🛡️</span>
-        <span class="name">Tapa Inferior</span>
-        <span class="sub">Ventilación térmica y patas</span>
+        <span class="emoji">🛸</span>
+        <span class="name">Plato OVNI (Base)</span>
+        <span class="sub">3 Patas de apoyo + Ventilación radial</span>
       </div>
     </div>
 
-    <!-- ZONA INTERACTIVA DIVERTIDA -->
+    <!-- ACCIONES INTERACTIVAS -->
     <div class="action-box">
       <button class="big-btn" id="cebar-btn" onclick="animarCebada()">
-        <span>🌊 ¡SIMULAR CEBADA!</span>
+        <span>🌊 ¡SIMULAR CEBADA 45°!</span>
       </button>
 
       <div class="slider-group">
         <div class="slider-header">
-          <span>💥 Despiece / Separar piezas</span>
+          <span>💥 Despiece / Explosionar</span>
           <span id="expl-val">0%</span>
         </div>
         <input type="range" id="expl-slider" min="0" max="60" value="0" oninput="updateExplosion(this.value)">
@@ -264,22 +265,25 @@
 
       <div class="slider-group">
         <div class="slider-header">
-          <span>📐 Ángulo Servo SG90</span>
+          <span>📐 Inclinación del Mate</span>
           <span id="servo-val">0°</span>
         </div>
         <input type="range" id="servo-slider" min="0" max="45" value="0" oninput="updateServo(this.value)">
       </div>
     </div>
 
-    <!-- EXPLICACIÓN SIMPLE Y CLARA -->
+    <!-- FICHA EXPLICATIVA -->
     <div class="trivia-card" id="trivia-text">
-      <strong>✨ Ensamble Completo:</strong><br>
-      Tenés las 4 piezas encastradas. Probá mover el slider de <strong>"Despiece"</strong> para ver cómo se separan en el aire, o apretá <strong>"¡SIMULAR CEBADA!"</strong> para ver el servo inclinando el mate a 45 grados.
+      <strong>🤖 ¡Chau cajas cuadradas!</strong><br>
+      Rediseñamos la estación a un formato cilíndrico tipo cápsula / termo inteligente:<br>
+      • <strong>Cuna superior:</strong> Cuenco cónico que abraza el mate.<br>
+      • <strong>Frente robótico:</strong> Los dos sensores de ultrasonido forman los <em>ojos tipo Wall-E</em> y la pantalla OLED es la <em>boca</em>.<br>
+      • <strong>Base OVNI:</strong> 3 patas de apoyo para que jamás se tambalee en la mesa.
     </div>
   </div>
 
   <div id="viewer-container">
-    <div id="mate-bubble">🧉 Mate apoyado en la base (Listo)</div>
+    <div id="mate-bubble">🧉 MateBot en espera (Listo para cebar)</div>
     <div id="loading">Cargando 3D...</div>
     <div id="canvas3d"></div>
   </div>
@@ -288,23 +292,23 @@
     const piecesData = [
       {
         name: "01_tilting_cradle_45deg.stl",
-        color: 0x22c55e, // Verde mate
-        desc: "<strong>🍵 Cuna Basculante:</strong><br>Acá va apoyado el mate. Tiene un cono de autocentrado para que no baile y un bolsillo abajo donde va pegado el acelerómetro GY-521 para medir la inclinación exacta."
+        color: 0x10b981, // Verde menta
+        desc: "<strong>🧉 Cuna Calabaza:</strong><br>Tiene forma de cuenco redondeado. El mate encastra justo en el centro y abajo lleva escondido el acelerómetro GY-521 para medir los grados reales cuando se mueve."
       },
       {
         name: "02_main_enclosure_base.stl",
-        color: 0x3b82f6, // Azul
-        desc: "<strong>⚡ Chasis Principal:</strong><br>La base donde se esconde toda la magia: rieles para deslizar el ESP32, bahía fija para el microservo SG90 y una cámara acústica para el buzzer anti-demora."
+        color: 0x3b82f6, // Azul eléctrico
+        desc: "<strong>🔋 Chasis Tipo Termo:</strong><br>Cilindro con cintura aerodinámica. Por dentro aloja la placa ESP32, el microservo SG90 que hace la fuerza y la cámara de sonido para el buzzer anti-colgados."
       },
       {
         name: "03_upper_sensor_fascia.stl",
-        color: 0xf59e0b, // Naranja
-        desc: "<strong>👁️ Frente de Sensores:</strong><br>La cara visible del equipo: bisel inclinado a 30° para leer la pantalla OLED comodamente parado, los dos 'ojos' del ultrasonido HC-SR04 y la rejilla del micrófono."
+        color: 0xf59e0b, // Amarillo Minion
+        desc: "<strong>👀 Cara Robótica:</strong><br>Los dos cilindros salientes son los ojos (sensor de distancia HC-SR04 para ver si estirás la mano) y el marco inferior aloja la pantalla OLED como si fuera una boca sonriente."
       },
       {
         name: "04_bottom_service_lid.stl",
-        color: 0xa855f7, // Violeta
-        desc: "<strong>🛡️ Tapa Inferior:</strong><br>Cierra la base con 4 tornillos M3, tiene 12 rejillas para que el regulador del ESP32 respire fresco y huecos para gomitas antideslizantes."
+        color: 0xa855f7, // Violeta neón
+        desc: "<strong>🛸 Plato OVNI:</strong><br>La base de apoyo con 3 patas trianguladas que aseguran estabilidad perfecta en el escritorio y rejillas radiales para ventilar el procesador."
       }
     ];
 
@@ -319,7 +323,7 @@
     const servoVal = document.getElementById('servo-val');
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d16);
+    scene.background = new THREE.Color(0x09090b);
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
     camera.position.set(130, 150, 180);
@@ -333,23 +337,23 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    // Iluminación bonita de estudio
-    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const light1 = new THREE.DirectionalLight(0x38bdf8, 0.9);
+    // Luces tipo showroom futurista
+    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+    const light1 = new THREE.DirectionalLight(0x06b6d4, 1.0);
     light1.position.set(150, 200, 120);
     scene.add(light1);
-    const light2 = new THREE.DirectionalLight(0x4ade80, 0.5);
+    const light2 = new THREE.DirectionalLight(0xa855f7, 0.6);
     light2.position.set(-150, -100, -100);
     scene.add(light2);
 
-    // Piso sutil estilo showroom
-    const grid = new THREE.GridHelper(260, 26, 0x1e293b, 0x0f172a);
+    // Piso circular
+    const grid = new THREE.GridHelper(260, 26, 0x27272a, 0x18181b);
     grid.position.y = -6;
     scene.add(grid);
 
     const loader = new THREE.STLLoader();
     const meshes = [];
-    let currentSelection = -1; // -1 = ensamble
+    let currentSelection = -1;
 
     function clearScene() {
       meshes.forEach(m => scene.remove(m));
@@ -363,9 +367,8 @@
       loading.style.display = 'block';
 
       if (idx === -1) {
-        // Ensamble
-        trivia.innerHTML = "<strong>✨ Ensamble Completo:</strong><br>Tenés las 4 piezas montadas. Usá los sliders para separarlas o cebar.";
-        bubble.innerText = "🧉 Mate en posición normal";
+        trivia.innerHTML = "<strong>🤖 MateBot Completo:</strong><br>El ensamble cilíndrico listo. Usá <strong>Despiece</strong> para ver cómo se desarma o <strong>¡SIMULAR CEBADA!</strong> para verlo en acción.";
+        bubble.innerText = "🧉 MateBot en espera (Listo para cebar)";
         explSlider.value = 0;
         explVal.innerText = "0%";
         servoSlider.value = 0;
@@ -377,13 +380,13 @@
             const mat = new THREE.MeshStandardMaterial({
               color: p.color,
               roughness: 0.35,
-              metalness: 0.2
+              metalness: 0.25
             });
             const m = new THREE.Mesh(geom, mat);
             m.rotation.x = -Math.PI / 2;
-            if (i === 0) m.position.y = 38; // Cuna
-            if (i === 2) m.position.y = 20; // Fascia
-            if (i === 3) m.position.y = -4; // Tapa
+            if (i === 0) m.position.y = 42; // Cuna redonda arriba
+            if (i === 2) m.position.y = 26; // Cara Minion intermedia
+            if (i === 3) m.position.y = -4; // Plato OVNI abajo
             scene.add(m);
             meshes[i] = m;
             loaded++;
@@ -393,7 +396,6 @@
         return;
       }
 
-      // Pieza individual
       const item = piecesData[idx];
       trivia.innerHTML = item.desc;
       bubble.innerText = `🔍 Inspeccionando: ${item.name.replace('.stl','')}`;
@@ -403,7 +405,7 @@
         const mat = new THREE.MeshStandardMaterial({
           color: item.color,
           roughness: 0.3,
-          metalness: 0.25
+          metalness: 0.3
         });
         const m = new THREE.Mesh(geom, mat);
         m.rotation.x = -Math.PI / 2;
@@ -417,8 +419,8 @@
       explVal.innerText = `${Math.round((val/60)*100)}%`;
       if (currentSelection === -1 && meshes.length === 4) {
         const d = parseFloat(val);
-        meshes[0].position.y = 38 + d * 1.5;
-        meshes[2].position.y = 20 + d * 0.8;
+        meshes[0].position.y = 42 + d * 1.6;
+        meshes[2].position.y = 26 + d * 0.9;
         meshes[3].position.y = -4 - d * 0.6;
       }
     }
@@ -433,15 +435,14 @@
       }
 
       if (deg > 30) {
-        bubble.innerText = `🌊 Inclinado a ${deg}°: ¡Cebando agua caliente!`;
+        bubble.innerText = `🌊 Inclinado a ${deg}°: ¡Cebando agua caliente! 🧉💦`;
       } else if (deg > 5) {
         bubble.innerText = `🔄 Inclinando a ${deg}°...`;
       } else {
-        bubble.innerText = `🧉 Mate apoyado en la base (Listo)`;
+        bubble.innerText = `🧉 MateBot en espera (Listo para cebar)`;
       }
     }
 
-    // Animación automática de cebada para jugar
     let animating = false;
     function animarCebada() {
       if (animating) return;
@@ -478,7 +479,6 @@
     }
     animate();
 
-    // Arrancar en ensamble completo
     selectPiece(-1);
   </script>
 </body>
