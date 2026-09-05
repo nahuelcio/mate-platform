@@ -3,93 +3,171 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor 3D - mate-platform</title>
+  <title>mate-platform Studio 3D (CAD Inspector)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f1117;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background: #090d16;
       color: #e6edf3;
       overflow: hidden;
       height: 100vh;
       display: flex;
     }
     #sidebar {
-      width: 320px;
-      background: #161b22;
-      border-right: 1px solid #30363d;
+      width: 360px;
+      background: #111827;
+      border-right: 1px solid #1f2937;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       z-index: 10;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.6);
     }
-    h1 { font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1f2937;
+    }
+    h1 { font-size: 1.15rem; font-weight: 700; color: #f3f4f6; display: flex; align-items: center; gap: 8px; }
     .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #059669;
+      color: #ecfdf5;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .section-title {
       font-size: 0.75rem;
-      background: #238636;
-      padding: 2px 8px;
-      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      font-weight: 600;
+      margin-top: 4px;
     }
     .piece-list { display: flex; flex-direction: column; gap: 8px; }
     .piece-btn {
-      background: #21262d;
-      border: 1px solid #30363d;
-      color: #c9d1d9;
-      padding: 12px 14px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #d1d5db;
+      padding: 10px 12px;
       border-radius: 8px;
       cursor: pointer;
       text-align: left;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .piece-btn:hover { background: #30363d; border-color: #58a6ff; }
+    .piece-btn:hover { background: #374151; border-color: #60a5fa; color: #fff; }
     .piece-btn.active {
-      background: #1f6feb;
-      border-color: #58a6ff;
-      color: white;
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #fff;
       font-weight: 600;
+      box-shadow: 0 0 12px rgba(37,99,235,0.4);
     }
-    .info-box {
-      background: #0d1117;
-      border: 1px solid #30363d;
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .tool-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .tool-btn:hover { background: #334155; color: #fff; }
+    .tool-btn.active { background: #38bdf8; color: #0f172a; font-weight: 700; border-color: #38bdf8; }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: #1e293b;
+      padding: 10px;
       border-radius: 8px;
-      padding: 14px;
-      font-size: 0.82rem;
+      border: 1px solid #334155;
+    }
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+    .slider-label span:last-child { color: #38bdf8; font-weight: 600; }
+    input[type=range] {
+      accent-color: #38bdf8;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .info-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.8rem;
       line-height: 1.5;
-      color: #8b949e;
+      color: #94a3b8;
       flex-grow: 1;
       overflow-y: auto;
     }
-    .info-box strong { color: #58a6ff; }
-    .controls-hint {
-      font-size: 0.78rem;
-      color: #8b949e;
-      padding-top: 8px;
-      border-top: 1px solid #30363d;
-    }
+    .info-card strong { color: #38bdf8; }
+    .info-card ul { margin-left: 16px; margin-top: 6px; }
+    .info-card li { margin-bottom: 4px; }
+
     #viewer-container {
       flex: 1;
       position: relative;
       height: 100%;
     }
     #canvas3d { width: 100%; height: 100%; display: block; }
+
     #loading {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(22, 27, 34, 0.85);
-      border: 1px solid #30363d;
-      padding: 16px 24px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      padding: 14px 22px;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      font-weight: 600;
       pointer-events: none;
       display: none;
+      box-shadow: 0 0 20px rgba(56,189,248,0.25);
+    }
+    .hud-controls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      backdrop-filter: blur(8px);
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -99,92 +177,159 @@
 <body>
 
   <div id="sidebar">
-    <h1>🧉 mate-platform <span class="badge">3D CAD</span></h1>
-    <p style="font-size: 0.85rem; color: #8b949e;">Seleccioná la pieza para visualizar e inspeccionar:</p>
+    <div class="header">
+      <h1>🧉 mate-platform</h1>
+      <span class="badge">Studio CAD</span>
+    </div>
 
+    <div class="section-title">Piezas y Ensamble</div>
     <div class="piece-list">
-      <button class="piece-btn active" onclick="loadModel(0)">
+      <button class="piece-btn" onclick="loadPiece(-1)">
+        <span>📦 Ensamble Completo</span>
+        <small style="opacity: 0.6;">4 Piezas</small>
+      </button>
+      <button class="piece-btn active" onclick="loadPiece(0)">
         <span>1. Cuna Basculante 45°</span>
-        <small style="opacity: 0.7;">Calabaza + IMU</small>
+        <small style="opacity: 0.6;">Ø78mm + IMU</small>
       </button>
-      <button class="piece-btn" onclick="loadModel(1)">
+      <button class="piece-btn" onclick="loadPiece(1)">
         <span>2. Chasis Principal</span>
-        <small style="opacity: 0.7;">ESP32 + Servo</small>
+        <small style="opacity: 0.6;">ESP32 + Servo</small>
       </button>
-      <button class="piece-btn" onclick="loadModel(2)">
-        <span>3. Carcasa Sensores</span>
-        <small style="opacity: 0.7;">OLED + US + Mic</small>
+      <button class="piece-btn" onclick="loadPiece(2)">
+        <span>3. Carcasa Superior</span>
+        <small style="opacity: 0.6;">OLED + US + Mic</small>
       </button>
-      <button class="piece-btn" onclick="loadModel(3)">
+      <button class="piece-btn" onclick="loadPiece(3)">
         <span>4. Tapa Inferior</span>
-        <small style="opacity: 0.7;">Servicio</small>
-      </button>
-      <button class="piece-btn" onclick="loadModel(-1)">
-        <span>📦 Ver Todas Juntas</span>
-        <small style="opacity: 0.7;">Ensamble</small>
+        <small style="opacity: 0.6;">Ventilación</small>
       </button>
     </div>
 
-    <div class="info-box" id="info-box">
-      <strong>Pieza 1: Cuna Basculante 45°</strong><br><br>
-      • Asiento interior cónico Ø 78 mm para el mate.<br>
-      • Pernos de giro laterales Ø 6 mm.<br>
-      • Aloja el sensor IMU GY-521 debajo.<br>
-      • Ojal inferior para vincular con el servo SG90.
+    <div class="section-title">Controles del Modelo</div>
+    <div class="controls-grid">
+      <button class="tool-btn" id="btn-wireframe" onclick="toggleWireframe()">
+        🕸️ Wireframe
+      </button>
+      <button class="tool-btn" id="btn-autorotate" onclick="toggleAutoRotate()">
+        🔄 Auto-Giro
+      </button>
     </div>
 
-    <div class="controls-hint">
-      <strong>Controles 3D:</strong><br>
-      • Click izquierdo + arrastrar: Rotar<br>
-      • Rueda del mouse: Zoom<br>
-      • Click derecho + arrastrar: Mover cámara
+    <div class="slider-row" id="tilt-control" style="display: none;">
+      <div class="slider-label">
+        <span>Inclinación de Cebado (Servo)</span>
+        <span id="tilt-val">0°</span>
+      </div>
+      <input type="range" id="tilt-slider" min="0" max="45" value="0" oninput="setTilt(this.value)">
+    </div>
+
+    <div class="slider-row" id="explode-control" style="display: none;">
+      <div class="slider-label">
+        <span>Vista Explosionada (Despiece)</span>
+        <span id="explode-val">0 mm</span>
+      </div>
+      <input type="range" id="explode-slider" min="0" max="60" value="0" oninput="setExplosion(this.value)">
+    </div>
+
+    <div class="section-title">Detalles Técnicos</div>
+    <div class="info-card" id="info-card">
+      <!-- Info dynamically updated -->
     </div>
   </div>
 
   <div id="viewer-container">
-    <div id="loading">Cargando modelo 3D...</div>
+    <div id="loading">Cargando modelo CAD...</div>
     <div id="canvas3d"></div>
+    <div class="hud-controls">
+      🖱️ <strong>Click Izq:</strong> Rotar | <strong>Rueda:</strong> Zoom | <strong>Click Der:</strong> Mover
+    </div>
   </div>
 
   <script>
-    const models = [
+    const pieces = [
       {
         name: "01_tilting_cradle_45deg.stl",
-        color: 0x2ea043, // Verde mate
-        desc: "<strong>Pieza 1: Cuna Basculante 45°</strong><br><br>• Asiento interior cónico Ø 78 mm.<br>• Pernos de pivote Ø 6 mm integrados.<br>• Bolsillo inferior para fijar acelerómetro GY-521 MPU6050.<br>• Orejeta para el brazo de empuje del servo SG90."
+        color: 0x10b981, // Esmeralda / Verde mate
+        title: "Pieza 1: Cuna Basculante 45°",
+        specs: `
+          <strong>Función:</strong> Aloja el mate y bascula a 45° para facilitar el cebado.<br>
+          <ul>
+            <li><strong>Asiento:</strong> Cono de centrado para mates de Ø 60 a 78 mm.</li>
+            <li><strong>Anti-vibración:</strong> 4 nervios internos para agarre firme.</li>
+            <li><strong>Pivotes:</strong> Ejes reforzados Ø 7.0 mm con horquilla de empuje.</li>
+            <li><strong>Sensores:</strong> Bolsillo inferior a medida para acelerómetro GY-521 (MPU6050) y activador de microswitch de presencia.</li>
+          </ul>
+        `
       },
       {
         name: "02_main_enclosure_base.stl",
-        color: 0x1f6feb, // Azul chasis
-        desc: "<strong>Pieza 2: Chasis Principal</strong><br><br>• Guías internas deslizables para placa ESP32 (30 pines).<br>• Salida para puerto USB posterior.<br>• Bahía rígida para fijación del servo SG90 con orejeras.<br>• Vaso acústico resonador para el buzzer de 12 mm."
+        color: 0x3b82f6, // Azul chasis
+        title: "Pieza 2: Chasis Principal",
+        specs: `
+          <strong>Función:</strong> Estructura portante para electrónica y actuadores.<br>
+          <ul>
+            <li><strong>ESP32 DevKit V1:</strong> Rieles guía con tope trasero y ranura para USB.</li>
+            <li><strong>Microservo SG90:</strong> Alojamiento con abrazaderas rígidas a prueba de torque.</li>
+            <li><strong>Buzzer 12mm:</strong> Vaso resonador para alarma acústica de mate colgado.</li>
+            <li><strong>Fijación:</strong> 4 torretas en esquinas para insertos roscados M3.</li>
+          </ul>
+        `
       },
       {
         name: "03_upper_sensor_fascia.stl",
-        color: 0xd29922, // Amarillo/dorado frontal
-        desc: "<strong>Pieza 3: Carcasa Frontal y Sensores</strong><br><br>• Bisel angulado a 30° para la pantalla OLED 0.96\".<br>• Ojos frontales de Ø 16.5 mm para el sensor HC-SR04.<br>• Rejilla acústica para el micrófono analógico GY-MAX9814.<br>• Bancadas de giro para sostener los pernos de la cuna."
+        color: 0xf59e0b, // Ámbar frontal
+        title: "Pieza 3: Carcasa Superior y Sensores",
+        specs: `
+          <strong>Función:</strong> Panel frontal interactivo y bancadas de giro.<br>
+          <ul>
+            <li><strong>Pantalla OLED 0.96":</strong> Bisel angulado a 30° ergonómico.</li>
+            <li><strong>Ultrasonido HC-SR04:</strong> Dos bocas cilíndricas a 26 mm entre centros.</li>
+            <li><strong>Micrófono GY-MAX9814:</strong> Cono acústico aislado mecánicamente del servo.</li>
+            <li><strong>Chumaceras:</strong> Bancadas reforzadas para los pernos de giro de la cuna.</li>
+          </ul>
+        `
       },
       {
         name: "04_bottom_service_lid.stl",
-        color: 0xa371f7, // Violeta tapa
-        desc: "<strong>Pieza 4: Tapa Inferior de Servicio</strong><br><br>• Ranuras de ventilación tipo persiana.<br>• 4 cavidades para patas de goma antideslizantes (Ø 12 x 2 mm).<br>• Fijación mediante 4 tornillos M3 avellanados."
+        color: 0x8b5cf6, // Púrpura tapa
+        title: "Pieza 4: Tapa Inferior de Servicio",
+        specs: `
+          <strong>Función:</strong> Cierre de base, disipación y estabilidad en mesa.<br>
+          <ul>
+            <li><strong>Ventilación:</strong> 12 ranuras persiana para evacuar calor del ESP32.</li>
+            <li><strong>Patas de goma:</strong> 4 rebajes cilíndricos para pads antideslizantes Ø 12 mm.</li>
+            <li><strong>Mantenimiento:</strong> Muesca de apertura rápida para inspección de cableado.</li>
+          </ul>
+        `
       }
     ];
 
     const container = document.getElementById('canvas3d');
     const loading = document.getElementById('loading');
-    const infoBox = document.getElementById('info-box');
-    const buttons = document.querySelectorAll('.piece-btn');
+    const infoCard = document.getElementById('info-card');
+    const tiltControl = document.getElementById('tilt-control');
+    const explodeControl = document.getElementById('explode-control');
+    const tiltSlider = document.getElementById('tilt-slider');
+    const tiltVal = document.getElementById('tilt-val');
+    const explodeSlider = document.getElementById('explode-slider');
+    const explodeVal = document.getElementById('explode-val');
+    const btns = document.querySelectorAll('.piece-btn');
 
-    // Escena, cámara y renderizador
+    let isWireframe = false;
+    let currentMode = 0; // -1: assembly, 0-3: single
+    const meshes = [];
+
+    // Scene & Renderer
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0d1117);
+    scene.background = new THREE.Color(0x090d16);
 
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
-    camera.position.set(130, 140, 160);
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1200);
+    camera.position.set(140, 160, 190);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
@@ -192,76 +337,135 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    // Luces
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+    // Lights
+    const amb = new THREE.AmbientLight(0xffffff, 0.75);
+    scene.add(amb);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight1.position.set(150, 200, 100);
-    scene.add(dirLight1);
+    const dir1 = new THREE.DirectionalLight(0xffffff, 0.9);
+    dir1.position.set(180, 220, 150);
+    scene.add(dir1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x58a6ff, 0.4);
-    dirLight2.position.set(-150, -100, -100);
-    scene.add(dirLight2);
+    const dir2 = new THREE.DirectionalLight(0x38bdf8, 0.5);
+    dir2.position.set(-180, -120, -100);
+    scene.add(dir2);
 
-    // Grilla en el piso
-    const gridHelper = new THREE.GridHelper(260, 26, 0x30363d, 0x21262d);
-    gridHelper.position.y = -2;
-    scene.add(gridHelper);
+    // Floor grid
+    const grid = new THREE.GridHelper(300, 30, 0x1e293b, 0x0f172a);
+    grid.position.y = -2;
+    scene.add(grid);
 
-    const currentMeshes = [];
-    const stlLoader = new THREE.STLLoader();
+    const loader = new THREE.STLLoader();
 
-    function clearMeshes() {
-      currentMeshes.forEach(mesh => scene.remove(mesh));
-      currentMeshes.length = 0;
+    function clearScene() {
+      meshes.forEach(m => scene.remove(m));
+      meshes.length = 0;
     }
 
-    function loadModel(index) {
-      buttons.forEach((b, i) => b.classList.toggle('active', i === (index === -1 ? 4 : index)));
-      clearMeshes();
+    function toggleWireframe() {
+      isWireframe = !isWireframe;
+      document.getElementById('btn-wireframe').classList.toggle('active', isWireframe);
+      meshes.forEach(m => {
+        if (m.material) m.material.wireframe = isWireframe;
+      });
+    }
+
+    function toggleAutoRotate() {
+      controls.autoRotate = !controls.autoRotate;
+      document.getElementById('btn-autorotate').classList.toggle('active', controls.autoRotate);
+    }
+
+    function setTilt(angle) {
+      tiltVal.innerText = `${angle}°`;
+      if (meshes.length > 0 && currentMode === 0) {
+        // Rotate cradle around pivot X axis
+        meshes[0].rotation.x = -Math.PI / 2 + (angle * Math.PI / 180);
+      }
+    }
+
+    function setExplosion(dist) {
+      explodeVal.innerText = `${dist} mm`;
+      if (currentMode === -1 && meshes.length === 4) {
+        // meshes[0]: cradle (+Y)
+        // meshes[1]: base (0)
+        // meshes[2]: fascia (+Y intermediate)
+        // meshes[3]: lid (-Y)
+        const d = parseFloat(dist);
+        meshes[0].position.y = 38 + d * 1.5;
+        meshes[2].position.y = 20 + d * 0.8;
+        meshes[3].position.y = -4 - d * 0.6;
+      }
+    }
+
+    function loadPiece(index) {
+      currentMode = index;
+      btns.forEach((b, i) => b.classList.toggle('active', i === (index === -1 ? 0 : index + 1)));
+      clearScene();
       loading.style.display = 'block';
 
       if (index === -1) {
-        // Cargar todas juntas en ensamble
-        infoBox.innerHTML = "<strong>📦 Vista de Ensamble Completo</strong><br><br>Muestra todas las piezas en su disposición estructural básica.<br>Usá el mouse para rotar, acercarte o inspeccionar detalles de encastre.";
-        let loadedCount = 0;
-        models.forEach((m, idx) => {
-          stlLoader.load(`models/${m.name}`, (geometry) => {
-            const material = new THREE.MeshStandardMaterial({
-              color: m.color,
-              roughness: 0.4,
-              metalness: 0.2
+        // Assembly mode
+        tiltControl.style.display = 'none';
+        explodeControl.style.display = 'flex';
+        explodeSlider.value = 0;
+        explodeVal.innerText = "0 mm";
+
+        infoCard.innerHTML = `
+          <strong>📦 Ensamble Estructural Completo</strong><br>
+          Visualización de encaje de las 4 piezas impresas:<br>
+          <ul>
+            <li><strong>Arriba:</strong> Cuna basculante y carcasa frontal de sensores.</li>
+            <li><strong>Centro:</strong> Chasis de control para ESP32, servo y buzzer.</li>
+            <li><strong>Abajo:</strong> Tapa de servicio con ventilación pasiva.</li>
+          </ul>
+          <em>Usa la barra "Vista Explosionada" para separar las piezas y ver el interior.</em>
+        `;
+
+        let count = 0;
+        pieces.forEach((p, idx) => {
+          loader.load(`models/${p.name}`, (geom) => {
+            const mat = new THREE.MeshStandardMaterial({
+              color: p.color,
+              roughness: 0.35,
+              metalness: 0.2,
+              wireframe: isWireframe
             });
-            const mesh = new THREE.Mesh(geometry, material);
-            // Orientación STL estándar (Z-up a Three.js Y-up)
+            const mesh = new THREE.Mesh(geom, mat);
             mesh.rotation.x = -Math.PI / 2;
-            if (idx === 0) mesh.position.y = 35; // Cuna elevada
-            if (idx === 2) mesh.position.y = 20; // Fascia intermedia
-            if (idx === 3) mesh.position.y = -5; // Tapa inferior
+            if (idx === 0) mesh.position.y = 38;
+            if (idx === 2) mesh.position.y = 20;
+            if (idx === 3) mesh.position.y = -4;
             scene.add(mesh);
-            currentMeshes.push(mesh);
-            loadedCount++;
-            if (loadedCount === models.length) loading.style.display = 'none';
+            meshes[idx] = mesh;
+            count++;
+            if (count === 4) loading.style.display = 'none';
           });
         });
         return;
       }
 
-      const item = models[index];
-      infoBox.innerHTML = item.desc;
+      // Single piece mode
+      explodeControl.style.display = 'none';
+      tiltControl.style.display = (index === 0) ? 'flex' : 'none';
+      if (index === 0) {
+        tiltSlider.value = 0;
+        tiltVal.innerText = "0°";
+      }
 
-      stlLoader.load(`models/${item.name}`, (geometry) => {
-        geometry.center();
-        const material = new THREE.MeshStandardMaterial({
-          color: item.color,
-          roughness: 0.35,
-          metalness: 0.25
+      const p = pieces[index];
+      infoCard.innerHTML = `<strong>${p.title}</strong><br>${p.specs}`;
+
+      loader.load(`models/${p.name}`, (geom) => {
+        geom.center();
+        const mat = new THREE.MeshStandardMaterial({
+          color: p.color,
+          roughness: 0.3,
+          metalness: 0.25,
+          wireframe: isWireframe
         });
-        const mesh = new THREE.Mesh(geometry, material);
+        const mesh = new THREE.Mesh(geom, mat);
         mesh.rotation.x = -Math.PI / 2;
         scene.add(mesh);
-        currentMeshes.push(mesh);
+        meshes.push(mesh);
         loading.style.display = 'none';
       });
     }
@@ -279,8 +483,8 @@
     }
     animate();
 
-    // Arrancar con la cuna basculante
-    loadModel(0);
+    // Start with cradle
+    loadPiece(0);
   </script>
 </body>
 </html>
