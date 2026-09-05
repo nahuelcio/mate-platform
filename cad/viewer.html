@@ -331,7 +331,7 @@
       {
         name: "02_main_enclosure_base.stl",
         color: 0x3a3a3c, // Aluminio anodizado gris espacial
-        desc: "<strong>2. Chasis Circular Unibody:</strong><br>Aloja la fosa central de oscilación libre del cuenco, la placa ESP32, servo SG90, switch de base, conector del botón físico y la <strong>cámara acústica para parlante/buzzer hacia el fondo (down-firing)</strong>."
+        desc: "<strong>2. Chasis Circular Unibody:</strong><br>Fosa circular PROFUNDA donde el cuenco del mate queda <strong>HUNDIDO 10 mm por debajo del bisel</strong>. Aloja ESP32, servo SG90, switch de base, botón físico y la cámara acústica down-firing para el parlante/buzzer."
       },
       {
         name: "03_upper_sensor_fascia.stl",
@@ -436,7 +436,7 @@
     bombillaMesh.rotation.x = Math.PI / 12;
     mateGroup.add(bombillaMesh);
 
-    mateGroup.position.set(0, 10, 0);
+    mateGroup.position.set(0, 2, 0);
     scene.add(mateGroup);
 
     // ==========================================
@@ -507,8 +507,8 @@
       mateGroup.visible = (idx === -1 || idx === 0);
 
       if (idx === -1) {
-        specsText.innerHTML = "<strong>Dock Completo Ensamblado:</strong><br>Perfil compacto de 34 mm de alto x 118 mm de diámetro.<br>• Cuenco hundido 22 mm anti-caídas.<br>• Display OLED frontal visible.<br>• <strong>LED de estado en bisel</strong> (azul fijo/pulsante).<br>• <strong>Slot para parlante abajo</strong> con rejilla oculta al usuario.<br>• Botón físico táctil para pasar turno.";
-        hudLabel.innerText = `OLED: "Turno de: ${participantsList[currentParticipantIndex]}" · LED azul listo · Audio abajo`;
+        specsText.innerHTML = "<strong>Dock Completo Ensamblado:</strong><br>Perfil compacto de 34 mm de alto x 118 mm de diámetro.<br>• <strong>El círculo del mate queda HUNDIDO 10 mm</strong> dentro de la base: el reborde del cuenco queda por debajo del bisel superior.<br>• Paredes del cuenco (Ø 62 → 78 mm) que abrazan y traban el mate.<br>• Display OLED frontal + LED de estado + botón físico.<br>• Slot de parlante hacia abajo con rejilla oculta.";
+        hudLabel.innerText = `OLED: "Turno de: ${participantsList[currentParticipantIndex]}" · Cuenco hundido 10 mm`;
         hudDot.style.background = "#0071e3";
         hudDot.style.boxShadow = "0 0 10px #0071e3";
         explSlider.value = 0;
@@ -526,7 +526,7 @@
             });
             const mesh = new THREE.Mesh(geom, mat);
             mesh.rotation.x = -Math.PI / 2;
-            if (i === 0) mesh.position.y = 8;  // Cuenco hundido en la fosa central
+            if (i === 0) mesh.position.y = 0;  // Cuenco HUNDIDO dentro de la fosa (reborde a -10 mm del bisel)
             if (i === 2) mesh.position.y = 24; // Bezel frontal + Botón + LED
             if (i === 3) mesh.position.y = -2; // Base de goma + Rejilla Parlante
             scene.add(mesh);
@@ -561,12 +561,12 @@
       explVal.innerText = `${val} mm`;
       if (currentSelection === -1 && meshes.length === 4) {
         const d = parseFloat(val);
-        meshes[0].position.y = 8 + d * 1.2;
+        meshes[0].position.y = 0 + d * 1.2;
         meshes[2].position.y = 24 + d * 0.7;
         meshes[3].position.y = -2 - d * 0.5;
         oledScreenMesh.position.y = 26.5 + d * 0.7;
         ledMesh.position.y = 28.0 + d * 0.7;
-        mateGroup.position.y = 10 + d * 1.5;
+        mateGroup.position.y = 2 + d * 1.5;
       }
     }
 
@@ -580,7 +580,7 @@
       mateGroup.rotation.x = rad;
 
       if (deg > 30) {
-        hudLabel.innerText = `Cebando agua caliente (${deg}°) · Mate trabado por las paredes`;
+        hudLabel.innerText = `Cebando (${deg}°) · Mate trabado por las paredes del cuenco hundido`;
         hudDot.style.background = "#22c55e";
         hudDot.style.boxShadow = "0 0 10px #22c55e";
       } else if (deg > 0) {
@@ -588,7 +588,7 @@
         hudDot.style.background = "#38bdf8";
         hudDot.style.boxShadow = "0 0 10px #38bdf8";
       } else {
-        hudLabel.innerText = `OLED: "Turno de: ${participantsList[currentParticipantIndex]}" · LED azul listo · Audio abajo`;
+        hudLabel.innerText = `OLED: "Turno de: ${participantsList[currentParticipantIndex]}" · Cuenco hundido 10 mm`;
         hudDot.style.background = "#0071e3";
         hudDot.style.boxShadow = "0 0 10px #0071e3";
       }

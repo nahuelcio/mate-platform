@@ -117,7 +117,7 @@ def build_tilting_cradle():
     r_cup_bottom = 31.0   # Ø 62 mm en fondo
     r_cup_top = 39.0      # Ø 78 mm en boca
     r_cradle_outer = 45.0 # Ø 90 mm exterior
-    depth = 22.0          # 22 mm de hundimiento
+    depth = 18.0          # 18 mm de hundimiento del mate (reborde queda a -10 mm del bisel)
     floor_thick = 4.0
 
     m.add_cylinder(0, 0, 0, r_cup_bottom + 4.0, floor_thick, segments=64)
@@ -158,8 +158,9 @@ def build_main_base():
     # Chaflán perimetral exterior suave MagSafe
     m.add_cone_frustum(0, 0, 0, r_base, r_top, h_dock, segments=72)
 
-    # Fosa circular central donde oscila libre el cuenco (Ø 94 mm)
-    m.add_cylinder(0, 0, 4.0, 47.0, h_dock - 4.0, segments=64)
+    # Fosa circular profunda: el cuenco del mate queda HUNDIDO dentro del cuerpo (Ø 94 mm)
+    # Abierta hasta el fondo: el reborde del cuenco queda 10 mm por debajo del bisel superior
+    m.add_cylinder(0, 0, 0, 47.0, h_dock, segments=64)
 
     # Cuna interna baja para placa ESP32 (30 pines)
     m.add_box(-15.0, -26.0, 3.0, 30.0, 52.0, 12.0)
