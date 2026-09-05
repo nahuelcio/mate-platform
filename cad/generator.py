@@ -1,9 +1,12 @@
 """
-Generador CAD 3D de alta onda para mate-platform:
-- Forma Cilíndrica/Orgánica estilo Termo / Maceta Cyberpunk
-- Ojitos "Wall-E / Minion" salientes para el sensor ultrasonido
-- Sonrisa/Boca que aloja la pantalla OLED SSD1306
-- Biselado curvo ergonómico, cero cajas cuadradas aburridas
+Generador CAD 3D de alta gama para mate-platform:
+ESTÉTICA: "Dock MagSafe Circular Fino"
+- Perfil ultra bajo, elegante, sin caras ni ojos de juguete.
+- Plato superior rasante magnético/apoyador de Ø 92 mm con bisel suave de 45°.
+- Anillo sutil para inclinación motorizada pivotada al ras.
+- Pantalla OLED rasante frontal como corte láser sutil.
+- Sensores discretos integrados en el perímetro inferior como puertos de audio de Apple.
+- Base circular tipo puck de aluminio con chaflán y apoyo de silicona perimetral.
 """
 import struct
 import math
@@ -40,7 +43,7 @@ class Mesh3D:
         self.add_quad(p0, p4, p7, p3)
         self.add_quad(p1, p2, p6, p5)
 
-    def add_cylinder(self, cx, cy, cz, r, h, segments=48):
+    def add_cylinder(self, cx, cy, cz, r, h, segments=64):
         top_pts, bot_pts = [], []
         for i in range(segments):
             th = 2.0 * math.pi * i / segments
@@ -54,7 +57,7 @@ class Mesh3D:
             self.add_triangle(c_top, top_pts[i], top_pts[ni])
             self.add_quad(bot_pts[i], bot_pts[ni], top_pts[ni], top_pts[i])
 
-    def add_cone_frustum(self, cx, cy, cz, r_bot, r_top, h, segments=48):
+    def add_cone_frustum(self, cx, cy, cz, r_bot, r_top, h, segments=64):
         top_pts, bot_pts = [], []
         for i in range(segments):
             th = 2.0 * math.pi * i / segments
@@ -68,7 +71,7 @@ class Mesh3D:
             self.add_triangle(c_top, top_pts[i], top_pts[ni])
             self.add_quad(bot_pts[i], bot_pts[ni], top_pts[ni], top_pts[i])
 
-    def add_pipe_segment(self, cx, cy, cz, r_in, r_out, h, segments=48):
+    def add_pipe_segment(self, cx, cy, cz, r_in, r_out, h, segments=64):
         for i in range(segments):
             th1 = 2.0 * math.pi * i / segments
             th2 = 2.0 * math.pi * (i + 1) / segments
@@ -104,123 +107,114 @@ class Mesh3D:
 
 
 # ----------------------------------------------------------------------------
-# 1. CUNA BASCULANTE ORGÁNICA (Forma de mate/cuenco ahuecado)
+# 1. DISCO DE APOYO BASCULANTE MAGSAFE (Tilting Pad Ultra-Slim)
+# Plato circular fino con rebaje de silicona y bisel suave de 45°
 # ----------------------------------------------------------------------------
 def build_tilting_cradle():
     m = Mesh3D("tilting_cradle")
-    r_cup_inner = 39.0   # Ø 78 mm
-    r_cradle_outer = 45.0 # Ø 90 mm exterior curvo
-    h_cradle = 30.0
+    r_disc = 45.0       # Ø 90 mm superficie de apoyo plana
+    r_recess = 40.0     # Ø 80 mm área interna antideslizante
+    t_pad = 6.0         # Solo 6 mm de espesor total
+    chamfer_h = 2.0
 
-    # Base redondeada estilo calabaza
-    m.add_cone_frustum(0, 0, 0, 36.0, r_cradle_outer, 12.0, segments=48)
-    m.add_cone_frustum(0, 0, 12.0, r_cradle_outer, r_cradle_outer - 1.5, h_cradle - 12.0, segments=48)
+    # Bisel inferior suave perimetral (estilo puck MagSafe)
+    m.add_cone_frustum(0, 0, 0, r_disc - 2.0, r_disc, chamfer_h, segments=64)
+    # Cuerpo cilíndrico del pad
+    m.add_cylinder(0, 0, chamfer_h, r_disc, t_pad - chamfer_h, segments=64)
+    # Rebaje superior milimétrico para almohadilla de silicona
+    m.add_pipe_segment(0, 0, t_pad, r_recess, r_disc, 1.2, segments=64)
 
-    # Hueco interno cónico para clavar el mate
-    m.add_pipe_segment(0, 0, 5.0, r_cup_inner - 3.0, r_cradle_outer - 1.0, 10.0, segments=48)
-    m.add_pipe_segment(0, 0, 15.0, r_cup_inner, r_cradle_outer - 1.5, h_cradle - 15.0, segments=48)
+    # Pernos de pivote integrados ocultos al ras
+    pin_r = 3.0
+    pin_len = 8.0
+    m.add_cylinder(r_disc - 1.0, 0, t_pad / 2.0, pin_r, pin_len, segments=24)
+    m.add_cylinder(-r_disc - pin_len + 1.0, 0, t_pad / 2.0, pin_r, pin_len, segments=24)
 
-    # Pernos de giro cilíndricos laterales robustos (Ø 8 mm)
-    pin_r = 4.0
-    pin_len = 12.0
-    m.add_cylinder(r_cradle_outer - 1.0, 0, 15.0, pin_r, pin_len, segments=24)
-    m.add_cylinder(-r_cradle_outer - pin_len + 1.0, 0, 15.0, pin_r, pin_len, segments=24)
-
-    # Nariz / oreja de articulación servo debajo
-    m.add_box(-5.0, -r_cradle_outer + 4.0, -12.0, 10.0, 10.0, 12.0)
-    # Bolsillo inferior para el sensor IMU GY-521
-    m.add_box(-12.5, -10.0, -5.0, 25.0, 20.0, 5.0)
+    # Leva de empuje servo oculta en la parte inferior
+    m.add_box(-4.0, -28.0, -6.0, 8.0, 8.0, 6.0)
+    # Bolsillo rasante para acelerómetro GY-521 debajo
+    m.add_box(-12.0, -10.0, -3.5, 24.0, 20.0, 3.5)
 
     return m
 
 # ----------------------------------------------------------------------------
-# 2. CHASIS PRINCIPAL (Cilíndrico / Cápsula estilo Minion/Termo)
+# 2. CHASIS DOCK CIRCULAR PRINCIPAL (Puck Unibody de Aluminio/Plástico Mate)
+# Diámetro 118 mm, altura ultra baja de solo 26 mm con chaflán perimetral
 # ----------------------------------------------------------------------------
 def build_main_base():
     m = Mesh3D("main_enclosure_base")
-    r_base_bot = 58.0   # Ø 116 mm base acampanada estable
-    r_base_mid = 54.0   # Ø 108 mm cintura
-    r_base_top = 56.0   # Ø 112 mm cuello
-    h_base = 56.0
+    r_base = 59.0      # Ø 118 mm base
+    r_top = 56.0       # Ø 112 mm parte superior
+    h_dock = 26.0      # Perfil ultra bajo
 
-    # Perfil cilíndrico curvo aerodinámico
-    m.add_cone_frustum(0, 0, 0, r_base_bot, r_base_mid, 24.0, segments=56)
-    m.add_cone_frustum(0, 0, 24.0, r_base_mid, r_base_top, h_base - 24.0, segments=56)
+    # Chaflán perimetral exterior suave (forma cónica sutil)
+    m.add_cone_frustum(0, 0, 0, r_base, r_top, h_dock, segments=72)
 
-    # Ahuecado interior amplio para alojar electrónica
-    m.add_cylinder(0, 0, 4.0, 47.0, h_base - 4.0, segments=48)
+    # Rebaje superior circular donde encaja al ras el pad basculante (Ø 93 mm)
+    m.add_cylinder(0, 0, h_dock - 8.0, 47.0, 8.0, segments=64)
 
-    # Cuna interna centrada para el ESP32
-    m.add_box(-15.0, -25.0, 4.0, 30.0, 52.0, 12.0)
-    # Soporte rígido para servo SG90
-    m.add_box(-38.0, -10.0, 4.0, 14.0, 24.0, 22.0)
-    # Vaso acústico para el buzzer 12mm
-    m.add_cylinder(28.0, 20.0, 4.0, 8.5, 14.0, segments=24)
+    # Cuna interna horizontal para alojar la placa ESP32 (30 pines)
+    m.add_box(-15.0, -26.0, 3.0, 30.0, 52.0, 11.0)
 
-    # Puertita trasera estilizada para cable USB
-    m.add_box(-12.0, r_base_bot - 10.0, 6.0, 24.0, 12.0, 12.0)
+    # Bahía horizontal compacta para el servo SG90
+    m.add_box(-36.0, -12.0, 3.0, 13.0, 24.0, 14.0)
+
+    # Cono acústico sutil para el buzzer integrado
+    m.add_pipe_segment(28.0, 15.0, 3.0, 4.0, 7.5, 12.0, segments=24)
+
+    # Puerto trasero sutil tipo USB-C / pasacables
+    m.add_box(-8.0, r_base - 8.0, 4.0, 16.0, 8.0, 7.0)
 
     return m
 
 # ----------------------------------------------------------------------------
-# 3. CARCASA SUPERIOR "FACE" (Ojitos salientes + Sonrisa OLED)
+# 3. BISEL Y ANILLO FRONTAL MINIMALISTA (Front Ring & Seamless Display)
+# Hendidura sutil para la pantalla OLED rasante y micro-ranuras para sensores
 # ----------------------------------------------------------------------------
 def build_upper_sensor_fascia():
     m = Mesh3D("upper_sensor_fascia")
     r_fascia = 56.5
-    h_fascia = 22.0
+    h_ring = 8.0
 
-    # Cuello circular superior con anillo redondeado
-    m.add_cone_frustum(0, 0, 0, r_fascia, r_fascia - 2.0, h_fascia, segments=56)
+    # Anillo rasante superior con borde pulido
+    m.add_pipe_segment(0, 0, 0, 47.5, r_fascia, h_ring, segments=72)
 
-    # Hueco central redondo amplio para que la cuna basculante gire libre
-    m.add_cylinder(0, 0, 0, 48.0, h_fascia + 2.0, segments=48)
+    # Ventana frontal rasante tipo cristal negro para OLED 0.96" (sin marcos toscos)
+    m.add_box(-16.0, -r_fascia + 1.0, 1.0, 32.0, 3.5, 6.0)
 
-    # 👀 "OJOS DE WALL-E / MINION": Dos tubos gemelos salientes para el HC-SR04
-    # Distancia entre centros exacta de 26 mm
-    eye_r = 10.0
-    eye_h = 14.0
-    eye_y = -r_fascia + 2.0
-    # Ojo Izquierdo
-    m.add_cylinder(-13.0, eye_y, 4.0, eye_r, eye_h, segments=32)
-    m.add_cylinder(-13.0, eye_y, 4.0, eye_r - 2.0, eye_h + 1.0, segments=32)
-    # Ojo Derecho
-    m.add_cylinder(13.0, eye_y, 4.0, eye_r, eye_h, segments=32)
-    m.add_cylinder(13.0, eye_y, 4.0, eye_r - 2.0, eye_h + 1.0, segments=32)
+    # Micro-perforaciones discretas frontales (estilo altavoz MacBook) para sensor de proximidad
+    m.add_cylinder(-10.0, -r_fascia + 3.0, 3.5, 3.5, 4.0, segments=24)
+    m.add_cylinder(10.0, -r_fascia + 3.0, 3.5, 3.5, 4.0, segments=24)
 
-    # 👄 "BOCA / SONRISA": Bisel curvo que enmarca la pantalla OLED
-    m.add_box(-20.0, eye_y + 4.0, -8.0, 40.0, 12.0, 10.0)
+    # Micrófono pinhole de 1.5 mm
+    m.add_cylinder(25.0, -r_fascia + 3.0, 3.5, 1.5, 4.0, segments=16)
 
-    # Bancadas laterales para apoyar los pernos de la cuna
-    m.add_box(47.0, -8.0, 2.0, 7.0, 16.0, 18.0)
-    m.add_box(-54.0, -8.0, 2.0, 7.0, 16.0, 18.0)
+    # Alojamientos de giro laterales ocultos
+    m.add_box(44.0, -5.0, 0, 4.0, 10.0, h_ring)
+    m.add_box(-48.0, -5.0, 0, 4.0, 10.0, h_ring)
 
     return m
 
 # ----------------------------------------------------------------------------
-# 4. TAPA INFERIOR (Plato base con patas estilo ovni)
+# 4. TAPA INFERIOR CON ANILLO DE GOMA CONTINUO (MagSafe Footprint)
 # ----------------------------------------------------------------------------
 def build_bottom_lid():
     m = Mesh3D("bottom_service_lid")
     r_lid = 58.0
-    t = 4.0
+    t_lid = 3.0
 
-    # Disco con borde biselado
-    m.add_cone_frustum(0, 0, 0, r_lid, r_lid - 2.0, t, segments=56)
+    # Base circular plana biselada
+    m.add_cylinder(0, 0, 0, r_lid, t_lid, segments=72)
 
-    # 3 Patas redondas tipo OVNI para máxima estabilidad
-    for i in range(3):
-        ang = i * (2.0 * math.pi / 3.0)
-        px = 44.0 * math.cos(ang)
-        py = 44.0 * math.sin(ang)
-        m.add_cylinder(px, py, -3.0, 8.0, 3.0, segments=24)
+    # Anillo de goma perimetral continuo (estilo cargador inalámbrico de escritorio)
+    m.add_pipe_segment(0, 0, -1.2, r_lid - 7.0, r_lid - 3.0, 1.2, segments=64)
 
-    # Rejillas de ventilación radiales
-    for i in range(8):
-        ang = i * (math.pi / 4.0)
-        rx = 24.0 * math.cos(ang)
-        ry = 24.0 * math.sin(ang)
-        m.add_cylinder(rx, ry, 0, 3.0, t + 1.0, segments=12)
+    # Micro-ranuras de ventilación radiales sutiles en el fondo
+    for i in range(12):
+        ang = i * (math.pi / 6.0)
+        rx = 26.0 * math.cos(ang)
+        ry = 26.0 * math.sin(ang)
+        m.add_box(rx - 1.0, ry - 3.0, 0, 2.0, 6.0, t_lid)
 
     return m
 

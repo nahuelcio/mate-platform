@@ -3,194 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MateBot 3D 🧉🤖</title>
+  <title>mate-platform · MagSafe Circular Dock</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at 50% 30%, #1e1b4b, #09090b);
-      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background: #000000;
+      color: #f5f5f7;
       overflow: hidden;
       height: 100vh;
       display: flex;
     }
 
-    /* SIDEBAR CYBERPUNK / MATERO */
+    /* BARRA LATERAL ESTILO APPLE PRO STUDIO */
     #sidebar {
-      width: 390px;
-      background: rgba(15, 15, 23, 0.9);
-      backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 24px;
+      width: 380px;
+      background: rgba(18, 18, 20, 0.88);
+      backdrop-filter: blur(28px) saturate(180%);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 28px 24px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
       z-index: 10;
-      box-shadow: 10px 0 35px rgba(0,0,0,0.6);
+      box-shadow: 12px 0 40px rgba(0, 0, 0, 0.8);
     }
 
     .brand {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 16px;
     }
     .brand h1 {
-      font-size: 1.5rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #a855f7, #06b6d4, #22c55e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .tag {
-      font-size: 0.7rem;
-      font-weight: 800;
-      background: #06b6d4;
-      color: #083344;
-      padding: 4px 10px;
-      border-radius: 20px;
+    .edition-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.1);
+      color: #a1a1a6;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
     .section-label {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: #a1a1aa;
-      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #86868b;
+      font-weight: 600;
     }
 
-    /* CARDS DE PIEZAS REDONDAS */
-    .piece-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .piece-card {
-      background: rgba(39, 39, 42, 0.6);
-      border: 1.5px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 12px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* SELECTOR DE PIEZAS MINIMALISTA */
+    .parts-menu {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      text-align: left;
+      gap: 6px;
     }
-    .piece-card:hover {
-      transform: translateY(-2px);
-      border-color: #06b6d4;
-      background: rgba(6, 182, 212, 0.15);
+    .part-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .piece-card.active {
-      background: linear-gradient(135deg, #7c3aed, #06b6d4);
-      border-color: #a5f3fc;
-      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+    .part-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
     }
-    .piece-card .emoji { font-size: 1.4rem; }
-    .piece-card .name { font-size: 0.85rem; font-weight: 800; color: #fff; }
-    .piece-card .sub { font-size: 0.7rem; color: #a1a1aa; }
-    .piece-card.active .sub { color: #f0fdf4; }
+    .part-item.active {
+      background: #0071e3;
+      border-color: #0071e3;
+      box-shadow: 0 4px 16px rgba(0, 113, 227, 0.35);
+    }
+    .part-item .title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #f5f5f7;
+    }
+    .part-item .dim {
+      font-size: 0.72rem;
+      color: #86868b;
+      font-variant-numeric: tabular-nums;
+    }
+    .part-item.active .dim { color: rgba(255, 255, 255, 0.75); }
 
-    /* ACTION ZONE */
-    .action-box {
-      background: rgba(24, 24, 27, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
+    /* CONTROLES TÉCNICOS SLIM */
+    .control-deck {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .big-btn {
-      background: linear-gradient(135deg, #10b981, #06b6d4);
+    .tilt-btn {
+      background: #f5f5f7;
+      color: #000000;
       border: none;
-      color: white;
-      font-weight: 900;
-      font-size: 1.05rem;
-      padding: 14px;
-      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 12px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      gap: 8px;
       transition: all 0.15s ease;
     }
-    .big-btn:hover {
-      transform: scale(1.02);
-      filter: brightness(1.15);
-    }
-    .big-btn:active { transform: scale(0.97); }
+    .tilt-btn:hover { background: #ffffff; transform: translateY(-1px); }
+    .tilt-btn:active { transform: scale(0.98); }
 
-    .slider-group {
+    .slider-wrap {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
-    .slider-header {
+    .slider-info {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #e4e4e7;
+      font-size: 0.75rem;
+      color: #86868b;
     }
-    .slider-header span:last-child { color: #06b6d4; font-weight: 900; }
+    .slider-info span:last-child {
+      color: #f5f5f7;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
     input[type=range] {
-      accent-color: #06b6d4;
+      accent-color: #0071e3;
       width: 100%;
-      height: 6px;
-      background: #3f3f46;
-      border-radius: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
       cursor: pointer;
     }
 
-    /* FICHA MEME / DIVERTIDA */
-    .trivia-card {
-      background: rgba(24, 24, 27, 0.6);
-      border-left: 3px solid #06b6d4;
+    /* FICHA TÉCNICA MINIMALISTA */
+    .specs-card {
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 2px solid #0071e3;
       padding: 12px 14px;
-      border-radius: 0 10px 10px 0;
-      font-size: 0.82rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.8rem;
       line-height: 1.5;
-      color: #a1a1aa;
+      color: #86868b;
       flex-grow: 1;
       overflow-y: auto;
     }
-    .trivia-card strong { color: #38bdf8; }
+    .specs-card strong { color: #f5f5f7; font-weight: 500; }
 
     /* VIEWPORT 3D */
     #viewer-container {
       flex: 1;
       position: relative;
       height: 100%;
+      background: radial-gradient(circle at 50% 40%, #16161a 0%, #000000 100%);
     }
     #canvas3d { width: 100%; height: 100%; display: block; }
 
-    #mate-bubble {
+    #hud-status {
       position: absolute;
       top: 24px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 15, 23, 0.85);
-      border: 1px solid rgba(6, 182, 212, 0.4);
-      padding: 10px 24px;
-      border-radius: 30px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #22d3ee;
+      background: rgba(18, 18, 20, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 20px;
+      border-radius: 24px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #f5f5f7;
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
       pointer-events: none;
-      backdrop-filter: blur(12px);
+    }
+    .dot-status {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34c759;
     }
 
     #loading {
@@ -198,12 +210,13 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(15, 15, 23, 0.95);
-      border: 1.5px solid #06b6d4;
-      color: #22d3ee;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-weight: 800;
+      background: rgba(18, 18, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f5f5f7;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
       pointer-events: none;
       display: none;
     }
@@ -216,140 +229,148 @@
 
   <div id="sidebar">
     <div class="brand">
-      <h1>🤖 MateBot 3D</h1>
-      <span class="tag">V2 Curva</span>
+      <h1>mate-platform</h1>
+      <span class="edition-tag">MagSafe Dock</span>
     </div>
 
-    <div class="section-label">Elegí qué pieza ver:</div>
-    <div class="piece-grid">
-      <div class="piece-card active" onclick="selectPiece(-1)">
-        <span class="emoji">🚀</span>
-        <span class="name">MateBot Entero</span>
-        <span class="sub">Diseño Cilindro</span>
+    <div class="section-label">Componentes del Ensamble</div>
+    <div class="parts-menu">
+      <div class="part-item active" onclick="selectPiece(-1)">
+        <span class="title">Dock Completo Ensamblado</span>
+        <span class="dim">Ø 118 × 26 mm</span>
       </div>
-      <div class="piece-card" onclick="selectPiece(0)">
-        <span class="emoji">🧉</span>
-        <span class="name">Calabaza 45°</span>
-        <span class="sub">Cuna redonda + IMU</span>
+      <div class="part-item" onclick="selectPiece(0)">
+        <span class="title">1. Pad Basculante Flush</span>
+        <span class="dim">Ø 90 × 6 mm</span>
       </div>
-      <div class="piece-card" onclick="selectPiece(1)">
-        <span class="emoji">🔋</span>
-        <span class="name">Cuerpo Termo</span>
-        <span class="sub">Chasis ESP32 curvo</span>
+      <div class="part-item" onclick="selectPiece(1)">
+        <span class="title">2. Chasis Circular Unibody</span>
+        <span class="dim">Ø 118 × 26 mm</span>
       </div>
-      <div class="piece-card" onclick="selectPiece(2)">
-        <span class="emoji">👀</span>
-        <span class="name">Cara Minion</span>
-        <span class="sub">Ojos US + Boca OLED</span>
+      <div class="part-item" onclick="selectPiece(2)">
+        <span class="title">3. Anillo & Bezel Display</span>
+        <span class="dim">Ø 113 × 8 mm</span>
       </div>
-      <div class="piece-card" onclick="selectPiece(3)" style="grid-column: span 2;">
-        <span class="emoji">🛸</span>
-        <span class="name">Plato OVNI (Base)</span>
-        <span class="sub">3 Patas de apoyo + Ventilación radial</span>
+      <div class="part-item" onclick="selectPiece(3)">
+        <span class="title">4. Base con Footprint de Goma</span>
+        <span class="dim">Ø 116 × 3 mm</span>
       </div>
     </div>
 
-    <!-- ACCIONES INTERACTIVAS -->
-    <div class="action-box">
-      <button class="big-btn" id="cebar-btn" onclick="animarCebada()">
-        <span>🌊 ¡SIMULAR CEBADA 45°!</span>
+    <div class="section-label">Simulación Dinámica</div>
+    <div class="control-deck">
+      <button class="tilt-btn" onclick="animatePour()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Simular Ciclo de Cebado (45°)
       </button>
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span>💥 Despiece / Explosionar</span>
-          <span id="expl-val">0%</span>
+      <div class="slider-wrap">
+        <div class="slider-info">
+          <span>Vista Explosionada</span>
+          <span id="expl-val">0 mm</span>
         </div>
-        <input type="range" id="expl-slider" min="0" max="60" value="0" oninput="updateExplosion(this.value)">
+        <input type="range" id="expl-slider" min="0" max="50" value="0" oninput="updateExplosion(this.value)">
       </div>
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span>📐 Inclinación del Mate</span>
-          <span id="servo-val">0°</span>
+      <div class="slider-wrap">
+        <div class="slider-info">
+          <span>Inclinación Servo (SG90)</span>
+          <span id="tilt-val">0°</span>
         </div>
-        <input type="range" id="servo-slider" min="0" max="45" value="0" oninput="updateServo(this.value)">
+        <input type="range" id="tilt-slider" min="0" max="45" value="0" oninput="updateTilt(this.value)">
       </div>
     </div>
 
-    <!-- FICHA EXPLICATIVA -->
-    <div class="trivia-card" id="trivia-text">
-      <strong>🤖 ¡Chau cajas cuadradas!</strong><br>
-      Rediseñamos la estación a un formato cilíndrico tipo cápsula / termo inteligente:<br>
-      • <strong>Cuna superior:</strong> Cuenco cónico que abraza el mate.<br>
-      • <strong>Frente robótico:</strong> Los dos sensores de ultrasonido forman los <em>ojos tipo Wall-E</em> y la pantalla OLED es la <em>boca</em>.<br>
-      • <strong>Base OVNI:</strong> 3 patas de apoyo para que jamás se tambalee en la mesa.
+    <div class="section-label">Especificaciones de Diseño</div>
+    <div class="specs-card" id="specs-text">
+      <strong>Diseño MagSafe Circular Fino:</strong><br>
+      Perfil ultra bajo con 26 mm de altura total. El mate se apoya suavemente sobre un pad circular continuo con rebaje de silicona. No hay ojos salientes ni molduras toscas: la pantalla OLED y los sensores quedan perfectamente integrados al ras del perímetro exterior.
     </div>
   </div>
 
   <div id="viewer-container">
-    <div id="mate-bubble">🧉 MateBot en espera (Listo para cebar)</div>
-    <div id="loading">Cargando 3D...</div>
+    <div id="hud-status">
+      <span class="dot-status"></span>
+      <span id="hud-label">Dock en reposo · Mate en posición neutra</span>
+    </div>
+    <div id="loading">Cargando STL...</div>
     <div id="canvas3d"></div>
   </div>
 
   <script>
-    const piecesData = [
+    const partsData = [
       {
         name: "01_tilting_cradle_45deg.stl",
-        color: 0x10b981, // Verde menta
-        desc: "<strong>🧉 Cuna Calabaza:</strong><br>Tiene forma de cuenco redondeado. El mate encastra justo en el centro y abajo lleva escondido el acelerómetro GY-521 para medir los grados reales cuando se mueve."
+        color: 0x222224, // Grafito mate pad
+        desc: "<strong>1. Pad Basculante Flush:</strong><br>Disco circular ultra plano de Ø 90 mm y solo 6 mm de espesor. El mate apoya libremente sobre su centro con rebaje de silicona. Oculta el acelerómetro GY-521 debajo y los pernos de pivote al ras del chasis."
       },
       {
         name: "02_main_enclosure_base.stl",
-        color: 0x3b82f6, // Azul eléctrico
-        desc: "<strong>🔋 Chasis Tipo Termo:</strong><br>Cilindro con cintura aerodinámica. Por dentro aloja la placa ESP32, el microservo SG90 que hace la fuerza y la cámara de sonido para el buzzer anti-colgados."
+        color: 0x3a3a3c, // Aluminio anodizado gris espacial
+        desc: "<strong>2. Chasis Circular Unibody:</strong><br>Cuerpo cilíndrico bajo de Ø 118 mm x 26 mm con chaflán perimetral. Aloja horizontalmente la placa ESP32, el microservo SG90 y la salida de audio acústica en una sola pieza limpia."
       },
       {
         name: "03_upper_sensor_fascia.stl",
-        color: 0xf59e0b, // Amarillo Minion
-        desc: "<strong>👀 Cara Robótica:</strong><br>Los dos cilindros salientes son los ojos (sensor de distancia HC-SR04 para ver si estirás la mano) y el marco inferior aloja la pantalla OLED como si fuera una boca sonriente."
+        color: 0x1c1c1e, // Negro piano bisel
+        desc: "<strong>3. Anillo Frontal & Bezel OLED:</strong><br>Aro superior con hendidura rasante para la pantalla OLED 0.96\" (sin marcos toscos) y micro-perforaciones discretas para los transductores de proximidad."
       },
       {
         name: "04_bottom_service_lid.stl",
-        color: 0xa855f7, // Violeta neón
-        desc: "<strong>🛸 Plato OVNI:</strong><br>La base de apoyo con 3 patas trianguladas que aseguran estabilidad perfecta en el escritorio y rejillas radiales para ventilar el procesador."
+        color: 0x2c2c2e, // Base inferior
+        desc: "<strong>4. Base con Footprint Continuo:</strong><br>Tapa inferior con canal perimetral para anillo de goma continuo (evita deslizamientos en la mesa de trabajo) y ranuras de ventilación radiales sutiles."
       }
     ];
 
     const container = document.getElementById('canvas3d');
     const loading = document.getElementById('loading');
-    const bubble = document.getElementById('mate-bubble');
-    const trivia = document.getElementById('trivia-text');
-    const cards = document.querySelectorAll('.piece-card');
+    const hudLabel = document.getElementById('hud-label');
+    const specsText = document.getElementById('specs-text');
+    const menuItems = document.querySelectorAll('.part-item');
     const explSlider = document.getElementById('expl-slider');
     const explVal = document.getElementById('expl-val');
-    const servoSlider = document.getElementById('servo-slider');
-    const servoVal = document.getElementById('servo-val');
+    const tiltSlider = document.getElementById('tilt-slider');
+    const tiltVal = document.getElementById('tilt-val');
 
+    // Escena 3D con estética de estudio de producto
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x09090b);
+    scene.background = new THREE.Color(0x0a0a0c);
 
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
-    camera.position.set(130, 150, 180);
+    const camera = new THREE.PerspectiveCamera(38, container.clientWidth / container.clientHeight, 1, 1000);
+    camera.position.set(110, 120, 160);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
     container.appendChild(renderer.domElement);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 + 0.05; // No ir demasiado abajo del piso
 
-    // Luces tipo showroom futurista
-    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-    const light1 = new THREE.DirectionalLight(0x06b6d4, 1.0);
-    light1.position.set(150, 200, 120);
-    scene.add(light1);
-    const light2 = new THREE.DirectionalLight(0xa855f7, 0.6);
-    light2.position.set(-150, -100, -100);
-    scene.add(light2);
+    // Iluminación de producto (Key Light + Rim Light sutil)
+    scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    keyLight.position.set(120, 180, 100);
+    scene.add(keyLight);
 
-    // Piso circular
-    const grid = new THREE.GridHelper(260, 26, 0x27272a, 0x18181b);
-    grid.position.y = -6;
-    scene.add(grid);
+    const fillLight = new THREE.DirectionalLight(0x71717a, 0.5);
+    fillLight.position.set(-120, -60, -80);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0x0071e3, 0.4);
+    rimLight.position.set(0, 150, -120);
+    scene.add(rimLight);
+
+    // Piso sutil reflectivo / halo
+    const discGeom = new THREE.RingGeometry(55, 140, 64);
+    const discMat = new THREE.MeshBasicMaterial({ color: 0x141418, side: THREE.DoubleSide });
+    const floorDisc = new THREE.Mesh(discGeom, discMat);
+    floorDisc.rotation.x = -Math.PI / 2;
+    floorDisc.position.y = -2;
+    scene.add(floorDisc);
 
     const loader = new THREE.STLLoader();
     const meshes = [];
@@ -362,33 +383,33 @@
 
     function selectPiece(idx) {
       currentSelection = idx;
-      cards.forEach((c, i) => c.classList.toggle('active', i === (idx === -1 ? 0 : idx + 1)));
+      menuItems.forEach((item, i) => item.classList.toggle('active', i === (idx === -1 ? 0 : idx + 1)));
       clearScene();
       loading.style.display = 'block';
 
       if (idx === -1) {
-        trivia.innerHTML = "<strong>🤖 MateBot Completo:</strong><br>El ensamble cilíndrico listo. Usá <strong>Despiece</strong> para ver cómo se desarma o <strong>¡SIMULAR CEBADA!</strong> para verlo en acción.";
-        bubble.innerText = "🧉 MateBot en espera (Listo para cebar)";
+        specsText.innerHTML = "<strong>Dock Completo Ensamblado:</strong><br>Perfil compacto de 26 mm de alto x 118 mm de diámetro. Usá el slider de <em>Vista Explosionada</em> para separar las 4 capas o hacé clic en <em>Simular Ciclo de Cebado</em> para ver cómo bascula el pad superior a 45°.";
+        hudLabel.innerText = "Dock en reposo · Mate en posición neutra";
         explSlider.value = 0;
-        explVal.innerText = "0%";
-        servoSlider.value = 0;
-        servoVal.innerText = "0°";
+        explVal.innerText = "0 mm";
+        tiltSlider.value = 0;
+        tiltVal.innerText = "0°";
 
         let loaded = 0;
-        piecesData.forEach((p, i) => {
-          loader.load(`models/${p.name}`, (geom) => {
+        partsData.forEach((part, i) => {
+          loader.load(`models/${part.name}`, (geom) => {
             const mat = new THREE.MeshStandardMaterial({
-              color: p.color,
-              roughness: 0.35,
-              metalness: 0.25
+              color: part.color,
+              roughness: (i === 1) ? 0.35 : 0.45,
+              metalness: (i === 1) ? 0.6 : 0.2
             });
-            const m = new THREE.Mesh(geom, mat);
-            m.rotation.x = -Math.PI / 2;
-            if (i === 0) m.position.y = 42; // Cuna redonda arriba
-            if (i === 2) m.position.y = 26; // Cara Minion intermedia
-            if (i === 3) m.position.y = -4; // Plato OVNI abajo
-            scene.add(m);
-            meshes[i] = m;
+            const mesh = new THREE.Mesh(geom, mat);
+            mesh.rotation.x = -Math.PI / 2;
+            if (i === 0) mesh.position.y = 19; // Pad superior flush
+            if (i === 2) mesh.position.y = 18; // Bezel frontal
+            if (i === 3) mesh.position.y = -2; // Base de goma
+            scene.add(mesh);
+            meshes[i] = mesh;
             loaded++;
             if (loaded === 4) loading.style.display = 'none';
           });
@@ -396,37 +417,37 @@
         return;
       }
 
-      const item = piecesData[idx];
-      trivia.innerHTML = item.desc;
-      bubble.innerText = `🔍 Inspeccionando: ${item.name.replace('.stl','')}`;
+      const item = partsData[idx];
+      specsText.innerHTML = item.desc;
+      hudLabel.innerText = `Inspección de pieza: ${item.name.replace('.stl','')}`;
 
       loader.load(`models/${item.name}`, (geom) => {
         geom.center();
         const mat = new THREE.MeshStandardMaterial({
           color: item.color,
-          roughness: 0.3,
-          metalness: 0.3
+          roughness: 0.35,
+          metalness: 0.5
         });
-        const m = new THREE.Mesh(geom, mat);
-        m.rotation.x = -Math.PI / 2;
-        scene.add(m);
-        meshes.push(m);
+        const mesh = new THREE.Mesh(geom, mat);
+        mesh.rotation.x = -Math.PI / 2;
+        scene.add(mesh);
+        meshes.push(mesh);
         loading.style.display = 'none';
       });
     }
 
     function updateExplosion(val) {
-      explVal.innerText = `${Math.round((val/60)*100)}%`;
+      explVal.innerText = `${val} mm`;
       if (currentSelection === -1 && meshes.length === 4) {
         const d = parseFloat(val);
-        meshes[0].position.y = 42 + d * 1.6;
-        meshes[2].position.y = 26 + d * 0.9;
-        meshes[3].position.y = -4 - d * 0.6;
+        meshes[0].position.y = 19 + d * 1.2; // Pad sube
+        meshes[2].position.y = 18 + d * 0.7; // Anillo
+        meshes[3].position.y = -2 - d * 0.5; // Base baja
       }
     }
 
-    function updateServo(deg) {
-      servoVal.innerText = `${deg}°`;
+    function updateTilt(deg) {
+      tiltVal.innerText = `${deg}°`;
       const rad = (deg * Math.PI) / 180;
       if (currentSelection === -1 && meshes[0]) {
         meshes[0].rotation.x = -Math.PI / 2 + rad;
@@ -435,35 +456,36 @@
       }
 
       if (deg > 30) {
-        bubble.innerText = `🌊 Inclinado a ${deg}°: ¡Cebando agua caliente! 🧉💦`;
-      } else if (deg > 5) {
-        bubble.innerText = `🔄 Inclinando a ${deg}°...`;
+        hudLabel.innerText = `Inclinación de cebado activa (${deg}°)`;
+      } else if (deg > 0) {
+        hudLabel.innerText = `Basculando pad superior (${deg}°)`;
       } else {
-        bubble.innerText = `🧉 MateBot en espera (Listo para cebar)`;
+        hudLabel.innerText = `Dock en reposo · Mate en posición neutra`;
       }
     }
 
-    let animating = false;
-    function animarCebada() {
-      if (animating) return;
-      animating = true;
+    let isAnimating = false;
+    function animatePour() {
+      if (isAnimating) return;
+      isAnimating = true;
       let angle = 0;
-      let goingUp = true;
-      const interval = setInterval(() => {
-        if (goingUp) {
+      let rising = true;
+
+      const timer = setInterval(() => {
+        if (rising) {
           angle += 2;
-          if (angle >= 45) goingUp = false;
+          if (angle >= 45) rising = false;
         } else {
           angle -= 2;
           if (angle <= 0) {
             angle = 0;
-            clearInterval(interval);
-            animating = false;
+            clearInterval(timer);
+            isAnimating = false;
           }
         }
-        servoSlider.value = angle;
-        updateServo(angle);
-      }, 25);
+        tiltSlider.value = angle;
+        updateTilt(angle);
+      }, 20);
     }
 
     window.addEventListener('resize', () => {
@@ -479,6 +501,7 @@
     }
     animate();
 
+    // Iniciar con ensamble completo
     selectPiece(-1);
   </script>
 </body>
