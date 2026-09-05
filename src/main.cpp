@@ -33,6 +33,10 @@ const int PIN_MIC_OUT = 35;
 // --- BUZZER / SPEAKER (DELAY ALARM) ---
 const int PIN_BUZZER = 19;
 
+// --- STATUS LED / BREATHING RING (INDICATOR) ---
+// Solid green/blue: ready/docked. Breathing blue: drinking. Blinking red: delay alarm!
+const int PIN_LED_STATUS = 2;
+
 // --- BASE DOCK SWITCH (MECHANICAL / BUTTON INPUT) ---
 const int PIN_BTN_BASE = 4;
 
@@ -227,8 +231,10 @@ void setup() {
   pinMode(PIN_TRIG, OUTPUT);
   pinMode(PIN_ECHO, INPUT);
   pinMode(PIN_BUZZER, OUTPUT);
+  pinMode(PIN_LED_STATUS, OUTPUT);
   pinMode(PIN_MIC_OUT, INPUT);
   digitalWrite(PIN_BUZZER, LOW);
+  digitalWrite(PIN_LED_STATUS, HIGH); // LED ON at boot
 
   // Initialize SG90 servo
   sg90.attach(PIN_SERVO_SG90);
@@ -329,6 +335,18 @@ void loop() {
     tone(PIN_BUZZER, 1000); // Sound alarm buzzer
     Serial.printf("[MatePlatform] ALARMA: %s se colgo con el mate!\n", participants[currentTurn].c_str());
     updateDisplay("ALARMA!", "Larga el mate!!");
+  }
+
+  // 4. Status LED Feedback
+  if (delayAlarmActive) {
+    // Fast blink during alarm
+    digitalWrite(PIN_LED_STATUS, (millis() / 250) % 2);
+  } else if (!mateOnDock) {
+    // Pulse/breathing effect while drinking
+    digitalWrite(PIN_LED_STATUS, (millis() / 500) % 2);
+  } else {
+    // Solid steady ON when docked/ready
+    digitalWrite(PIN_LED_STATUS, HIGH);
   }
 
   delay(50);
